@@ -7,8 +7,10 @@ package com.fon.common.domain;
 import java.io.Serializable;
 
 /**
+ * Enumeration representing sex.
  *
  * @author Aleksa
+ * @since 0.0.1
  */
 public enum Sex implements Serializable {
     MALE, FEMALE;
