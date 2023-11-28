@@ -4,7 +4,6 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -12,7 +11,7 @@ import java.sql.SQLException;
  *
  * @author Aleksa
  */
-public class EducationalInstitution implements GenericEntity, Serializable {
+public class EducationalInstitution implements GenericEntity {
 
     private int educationalInstitutionID;
     private String name;

@@ -4,6 +4,7 @@
  */
 package com.fon.common.domain;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ import java.util.Date;
  * @author Aleksa
  * @since 0.0.1
  */
-public interface GenericEntity {
+public interface GenericEntity extends Serializable {
 
     /**
      * Returns the database table name of the implementing domain class as

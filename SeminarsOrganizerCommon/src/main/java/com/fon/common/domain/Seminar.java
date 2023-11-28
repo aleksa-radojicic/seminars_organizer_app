@@ -4,10 +4,8 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,7 +13,7 @@ import java.util.Objects;
  *
  * @author Aleksa
  */
-public class Seminar implements GenericEntity, Serializable {
+public class Seminar implements GenericEntity {
 
     private int seminarID;
     private String name;

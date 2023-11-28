@@ -4,7 +4,6 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.Date;
  *
  * @author Aleksa
  */
-public class Participant implements GenericEntity, Serializable {
+public class Participant implements GenericEntity {
 
     private int participantID;
     private String name;

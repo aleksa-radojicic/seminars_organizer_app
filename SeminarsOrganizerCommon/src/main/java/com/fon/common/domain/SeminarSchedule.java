@@ -4,7 +4,6 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -16,7 +15,7 @@ import java.util.Objects;
  *
  * @author Aleksa
  */
-public class SeminarSchedule implements GenericEntity, Serializable {
+public class SeminarSchedule implements GenericEntity {
 
     private int seminarScheduleID;
     private Date datetimeBegins;

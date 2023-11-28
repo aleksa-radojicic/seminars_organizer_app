@@ -4,7 +4,6 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.Objects;
  *
  * @author Aleksa
  */
-public class Admin implements GenericEntity, Serializable {
+public class Admin implements GenericEntity {
 
     private int adminID;
     private String username;
