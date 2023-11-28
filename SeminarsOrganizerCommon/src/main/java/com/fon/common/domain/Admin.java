@@ -216,16 +216,12 @@ public class Admin implements GenericEntity {
         return sb.toString();
     }
 
-    @Override
-    public String getTableName() {
-        return GenericEntity.super.getTableName(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-    }
-
-    @Override
-    public String getAttributeNames() {
-        return GenericEntity.super.getAttributeNames(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-    }
-
+    /**
+     * This method is not implemented.
+     *
+     * @throws UnsupportedOperationException Signifies the method is not yet
+     * supported.
+     */
     @Override
     public State getState() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -246,15 +242,5 @@ public class Admin implements GenericEntity {
      */
     public String getFullName() {
         return name + " " + surname;
-    }
-
-    @Override
-    public String getSelectAllQuery() {
-        return "SELECT " + getAttributeNames() + " FROM " + getTableName();
-    }
-
-    @Override
-    public String getAttributeValues() throws Exception {
-        return GenericEntity.super.getAttributeValues(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
 }
