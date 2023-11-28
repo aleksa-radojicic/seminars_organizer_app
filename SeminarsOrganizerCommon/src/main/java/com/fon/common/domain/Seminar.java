@@ -148,8 +148,8 @@ public class Seminar implements GenericEntity {
     }
 
     /**
-     * Equals method which compares all attributes except createdByAdmin.Used
- in a form for updating seminars to check if the Seminar is changed.
+     * Equals method which compares all attributes except createdByAdmin. Used in
+     * a form for updating seminars to check if the Seminar is changed.
      *
      * @param obj
      * @return {@code true} if all attributes except createdByAdmin are equal
@@ -181,7 +181,7 @@ public class Seminar implements GenericEntity {
     /**
      * Equals method which compares all attributes except createdByAdmin and
      * seminarTopics.Used in a form for updating seminars to check if the
- Seminar's main attributes are changed.
+     * Seminar's main attributes are changed.
      *
      * @param obj
      * @return {@code true} if all attributes except createdByAdmin and
@@ -313,8 +313,8 @@ public class Seminar implements GenericEntity {
 
     /**
      * Setter for state.
-     * 
-     * @param state State as {@code State}. 
+     *
+     * @param state State as {@code State}.
      */
     public void setState(State state) {
         this.state = state;

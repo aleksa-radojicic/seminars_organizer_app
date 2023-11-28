@@ -12,25 +12,83 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Domain class representing a scheduled seminar event within an educational
+ * institution, along with all seminar enrollments.
+ *
+ * <p>
+ * This class implements the GenericEntity interface, providing generic methods
+ * to interact with the database.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
+ *
  */
 public class SeminarSchedule implements GenericEntity {
 
+    /**
+     * Unique identifier of the SeminarSchedule as {@code int}.
+     */
     private int seminarScheduleID;
-    private Date datetimeBegins;
-    private Date datetimeEnds;
-    private Admin createdByAdmin;
-    private Seminar seminar;
-    private EducationalInstitution educationalInstitution;
-    private List<SeminarEnrollment> seminarEnrollments;
-    private State state;
 
+    /**
+     * SeminarSchedule's beginning date and time as {@code Date}.
+     */
+    private Date datetimeBegins;
+
+    /**
+     * SeminarSchedule's end date and time as {@code Date}.
+     */
+    private Date datetimeEnds;
+
+    /**
+     * Admin who created the SeminarSchedule as {@code Admin}.
+     */
+    private Admin createdByAdmin;
+
+    /**
+     * Seminar which is scheduled as {@code Seminar}.
+     */
+    private Seminar seminar;
+
+    /**
+     * Educational institution hosting the SeminarSchedule as
+     * {@code EducationalInstitution}.
+     */
+    private EducationalInstitution educationalInstitution;
+
+    /**
+     * List of all SeminarEnrollments that the SeminarSchedule contains as
+     * {@code List<SeminarEnrollment>}.
+     */
+    private List<SeminarEnrollment> seminarEnrollments;
+
+    /**
+     * Seminar's state as {@code State}, default is {@code State.UNCHANGED}.
+     */
+    private State state = State.UNCHANGED;
+
+    /**
+     * Non-parametric constructor. Initializes seminarEnrollments to an empty
+     * list.
+     */
     public SeminarSchedule() {
         seminarEnrollments = new LinkedList();
-        this.state = State.UNCHANGED;
     }
 
+    /**
+     * Constructor with all parameters except state.
+     *
+     * @param seminarScheduleID ID as {@code int}.
+     * @param datetimeBegins Beginning date and time as {@code Date}.
+     * @param datetimeEnds End date and time as {@code Date}.
+     * @param createdByAdmin Admin who created the Seminar as {@code Admin}.
+     * @param seminar Seminar which is scheduled as {@code Seminar}.
+     * @param educationalInstitution Educational institution hosting the
+     * SeminarSchedule as {@code EducationalInstitution}.
+     * @param seminarEnrollments List of all SeminarEnrollments that the
+     * SeminarSchedule contains as {@code List<SeminarEnrollment>}.
+     */
     public SeminarSchedule(int seminarScheduleID, Date datetimeBegins, Date datetimeEnds, Admin createdByAdmin,
             Seminar seminar, EducationalInstitution educationalInstitution, List<SeminarEnrollment> seminarEnrollments) {
         this.seminarScheduleID = seminarScheduleID;
@@ -40,9 +98,13 @@ public class SeminarSchedule implements GenericEntity {
         this.seminar = seminar;
         this.educationalInstitution = educationalInstitution;
         this.seminarEnrollments = seminarEnrollments;
-        this.state = State.UNCHANGED;
     }
 
+    /**
+     * toString method which returns all attributes of SeminarSchedule.
+     *
+     * @return String representation of the SeminarSchedule.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -53,16 +115,33 @@ public class SeminarSchedule implements GenericEntity {
         sb.append(", createdByAdmin=").append(createdByAdmin);
         sb.append(", seminar=").append(seminar);
         sb.append(", educationalInstitution=").append(educationalInstitution);
+        sb.append(", state=").append(state);
         sb.append('}');
         return sb.toString();
     }
 
+    /**
+     * Returns hash code, calculated using seminarScheduleID.
+     *
+     * @return Hash code as {@code int}.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 67 * hash + this.seminarScheduleID;
         return hash;
     }
 
+    /**
+     * Equals method which compares all attributes except createdByAdmin and
+     * state. Used in a form for updating seminar schedules to check if the
+     * SeminarSchedule is changed.
+     *
+     * @param obj
+     * @return {@code true} if all attributes except createdByAdmin and state
+     * are equal including full equality of seminarEnrollments, otherwise
+     * {@code false}.
+     */
     public boolean equalsAll(Object obj) {
         if (this == obj) {
             return true;
@@ -93,6 +172,15 @@ public class SeminarSchedule implements GenericEntity {
         return SeminarEnrollment.equalsAll(this.seminarEnrollments, other.seminarEnrollments);
     }
 
+    /**
+     * Equals method which compares all attributes except createdByAdmin, state
+     * and seminarEnrollments. Used in a form for updating seminar schedules s
+     * to check if the SeminarSchedules's main attributes are changed.
+     *
+     * @param obj
+     * @return {@code true} if all attributes except createdByAdmin, state and
+     * seminarEnrollments are equal, otherwise {@code false}.
+     */
     public boolean equalsAllWithoutSeminarEnrollments(Object obj) {
         if (this == obj) {
             return true;
@@ -119,6 +207,12 @@ public class SeminarSchedule implements GenericEntity {
         return Objects.equals(this.educationalInstitution, other.educationalInstitution);
     }
 
+    /**
+     * Equals method which compares seminarScheduleID.
+     *
+     * @return {@code true} if seminarScheduleIDs are equal, otherwise
+     * {@code false}.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -184,6 +278,11 @@ public class SeminarSchedule implements GenericEntity {
                JOIN `seminars` s ON ss.`seminarID` = s.`seminarID`""";
     }
 
+    /**
+     * Setter for state.
+     *
+     * @param state State as {@code State}
+     */
     public void setState(State state) {
         this.state = state;
     }
@@ -193,60 +292,136 @@ public class SeminarSchedule implements GenericEntity {
         return state;
     }
 
+    /**
+     * Getter for seminarScheduleID.
+     *
+     * @return ID as {@code int}.
+     */
     public int getSeminarScheduleID() {
         return seminarScheduleID;
     }
 
+    /**
+     * Setter for seminarScheduleID.
+     *
+     * @param seminarScheduleID ID as {@code int}.
+     */
     public void setSeminarScheduleID(int seminarScheduleID) {
         this.seminarScheduleID = seminarScheduleID;
     }
 
+    /**
+     * Getter for datetimeBegins.
+     *
+     * @return SeminarSchedule's beginning date and time as {@code Date}.
+     */
     public Date getDatetimeBegins() {
         return datetimeBegins;
     }
 
+    /**
+     * Setter for datetimeBegins.
+     *
+     * @param datetimeBegins SeminarSchedule's beginning date and time as
+     * {@code Date}.
+     */
     public void setDatetimeBegins(Date datetimeBegins) {
         this.datetimeBegins = datetimeBegins;
     }
 
+    /**
+     * Getter for datetimeEnds.
+     *
+     * @return SeminarSchedule's end date and time as {@code Date}.
+     */
     public Date getDatetimeEnds() {
         return datetimeEnds;
     }
 
+    /**
+     * Setter for datetimeEnds.
+     *
+     * @param datetimeEnds SeminarSchedule's end date and time as {@code Date}.
+     */
     public void setDatetimeEnds(Date datetimeEnds) {
         this.datetimeEnds = datetimeEnds;
     }
 
+    /**
+     * Getter for createdByAdmin.
+     *
+     * @return Admin who created the SeminarSchedule as {@code Admin}.
+     */
     public Admin getCreatedByAdmin() {
         return createdByAdmin;
     }
 
+    /**
+     * Setter for createdByAdmin.
+     *
+     * @param createdByAdmin Admin who created the SeminarSchedule as
+     * {@code Admin}.
+     */
     public void setCreatedByAdmin(Admin createdByAdmin) {
         this.createdByAdmin = createdByAdmin;
     }
 
+    /**
+     * Getter for seminar.
+     *
+     * @return Seminar which is scheduled as {@code Seminar}.
+     */
     public Seminar getSeminar() {
         return seminar;
     }
 
+    /**
+     * Setter for seminar.
+     *
+     * @param seminar Seminar which is scheduled as {@code Seminar}.
+     */
     public void setSeminar(Seminar seminar) {
         this.seminar = seminar;
     }
 
+    /**
+     * Getter for educationalInstitution.
+     *
+     * @return Educational institution hosting the SeminarSchedule as
+     * {@code EducationalInstitution}.
+     */
     public EducationalInstitution getEducationalInstitution() {
         return educationalInstitution;
     }
 
+    /**
+     * Setter for educationalInstitution.
+     *
+     * @param educationalInstitution Educational institution hosting the
+     * SeminarSchedule as {@code EducationalInstitution}.
+     */
     public void setEducationalInstitution(EducationalInstitution educationalInstitution) {
         this.educationalInstitution = educationalInstitution;
     }
 
+    /**
+     * Getter for seminarEnrollments.
+     *
+     * @return List of all SeminarEnrollments that the SeminarSchedule contains
+     * as {@code List<SeminarEnrollment>}.
+     */
     public List<SeminarEnrollment> getSeminarEnrollments() {
         return seminarEnrollments;
     }
 
+    /**
+     * Setter for seminarEnrollments.
+     *
+     *
+     * @param seminarEnrollments List of all SeminarEnrollments that the
+     * SeminarSchedule contains as {@code List<SeminarEnrollment>}.
+     */
     public void setSeminarEnrollments(List<SeminarEnrollment> seminarEnrollments) {
         this.seminarEnrollments = seminarEnrollments;
     }
-
 }
