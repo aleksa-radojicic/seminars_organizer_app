@@ -148,11 +148,12 @@ public class Seminar implements GenericEntity {
     }
 
     /**
-     * Equals method which compares all attributes except createdByAdmin. Used
-     * in a form for updating seminars to check if the Seminar is changed.
+     * Equals method which compares all attributes except createdByAdmin.Used
+ in a form for updating seminars to check if the Seminar is changed.
      *
+     * @param obj
      * @return {@code true} if all attributes except createdByAdmin are equal
-     * including full equality of SeminarTopics, otherwise {@code false}.
+     * including full equality of seminarTopics, otherwise {@code false}.
      */
     public boolean equalsAll(Object obj) {
         if (this == obj) {
@@ -179,9 +180,10 @@ public class Seminar implements GenericEntity {
 
     /**
      * Equals method which compares all attributes except createdByAdmin and
-     * seminarTopics. Used in a form for updating seminars to check if the
-     * Seminar's main attributes are changed.
+     * seminarTopics.Used in a form for updating seminars to check if the
+ Seminar's main attributes are changed.
      *
+     * @param obj
      * @return {@code true} if all attributes except createdByAdmin and
      * seminarTopics are equal, otherwise {@code false}.
      */
