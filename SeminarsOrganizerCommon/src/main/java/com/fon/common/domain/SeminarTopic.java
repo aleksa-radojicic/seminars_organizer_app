@@ -4,40 +4,89 @@
  */
 package com.fon.common.domain;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
 /**
+ * Domain class representing a seminar topic belonging to a specific seminar.
+ *
+ * <p>
+ * This class implements the GenericEntity interface, providing generic methods
+ * to interact with the database.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
+ *
  */
-public class SeminarTopic implements GenericEntity, Serializable {
+public class SeminarTopic implements GenericEntity {
 
+    /**
+     * Seminar that contains the SeminarTopic as {@code Seminar}, part of the
+     * primary key.
+     */
     private Seminar seminar;
-    private int seminarTopicID;
-    private String name;
-    private String presenter;
-    private State state;
 
+    /**
+     * Unique identifier of the SeminarTopic as {@code int}, part of the primary
+     * key.
+     */
+    private int seminarTopicID;
+
+    /**
+     * SeminarTopic's name as {@code String}.
+     */
+    private String name;
+
+    /**
+     * SeminarTopic's presenter, consisting of a name and a surname, as
+     * {@code String}.
+     */
+    private String presenter;
+
+    /**
+     * SeminarTopic's state as {@code State}, default is
+     * {@code State.UNCHANGED}.
+     */
+    private State state = State.UNCHANGED;
+
+    /**
+     * Non-parametric constructor.
+     */
     public SeminarTopic() {
-        this.state = State.UNCHANGED;
     }
 
+    /**
+     * Constructor with all parameters except state.
+     *
+     * @param seminar Seminar that contains the SeminarTopic as {@code Seminar}.
+     * @param seminarTopicID ID as {@code int}.
+     * @param name Name as {@code String}.
+     * @param presenter Presenter as {@code String}.
+     */
     public SeminarTopic(Seminar seminar, int seminarTopicID, String name, String presenter) {
         this.seminar = seminar;
         this.seminarTopicID = seminarTopicID;
         this.name = name;
         this.presenter = presenter;
-        this.state = State.UNCHANGED;
     }
 
+    /**
+     * Constructor with seminarTopicID.
+     *
+     * @param seminarTopicID ID as {@code int}.
+     */
     public SeminarTopic(int seminarTopicID) {
         this.seminarTopicID = seminarTopicID;
     }
 
+    /**
+     * toString method which returns all attributes of SeminarTopic.
+     *
+     * @return String representation of the SeminarTopic.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -48,7 +97,6 @@ public class SeminarTopic implements GenericEntity, Serializable {
         sb.append(", state=").append(state);
         return sb.toString();
     }
-
 
     @Override
     public String getAttributeNames() {
@@ -78,12 +126,27 @@ public class SeminarTopic implements GenericEntity, Serializable {
                 + "presenter= '" + getPresenter() + "'";
     }
 
+    /**
+     * Returns hash code, calculated using seminar and seminarTopicID.
+     *
+     * @return Hash code as {@code int}.
+     */
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.seminar);
+        hash = 83 * hash + this.seminarTopicID;
         return hash;
     }
 
+    /**
+     * Equals method which compares all attributes.Used in a form for updating
+ seminars to check if the Seminar is changed.
+     *
+     * @param obj
+     * @return {@code true} if all attributes are equal, otherwise
+     * {@code false}.
+     */
     public boolean equalsAll(Object obj) {
         if (this == obj) {
             return true;
@@ -107,6 +170,23 @@ public class SeminarTopic implements GenericEntity, Serializable {
         return Objects.equals(this.seminar, other.seminar);
     }
 
+    /**
+     * Compares two lists of seminar topics to check for full equality.
+     *
+     * <p>
+     * This static method compares two lists of SeminarTopic instances,
+     * validating their full equality (meaning comparing all attributes). It
+     * iterates through both lists to verify if the sizes match and if each
+     * corresponding SeminarTopic within the lists are fully equaled.
+     * </p>
+     *
+     * @param seminarTopics First list of seminar topics for comparison.
+     * @param others Second list of seminar topics for comparison.
+     * @return {@code false} if lists sizes are not equal. While iterating
+     * through first list, if according SeminarTopics are not fully equaled,
+     * then returns {@code false}. If all according seminar topics are equal
+     * returns {@code true}.
+     */
     public static boolean equalsAll(List<SeminarTopic> seminarTopics, List<SeminarTopic> others) {
         if (seminarTopics.size() != others.size()) {
             return false;
@@ -123,6 +203,12 @@ public class SeminarTopic implements GenericEntity, Serializable {
         return true;
     }
 
+    /**
+     * Equals method which compares seminarTopicID and seminar.
+     *
+     * @return {@code true} if seminarTopicIDs and seminars are equal, otherwise
+     * {@code false}.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -141,8 +227,6 @@ public class SeminarTopic implements GenericEntity, Serializable {
         return Objects.equals(this.seminar, other.seminar);
     }
 
-    
-    
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
         SeminarTopic st = new SeminarTopic(null, rs.getInt(2), rs.getString(3), rs.getString(4));
@@ -154,40 +238,84 @@ public class SeminarTopic implements GenericEntity, Serializable {
         return state;
     }
 
+    /**
+     * Getter for name.
+     *
+     * @return Name as {@code String}.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for name.
+     *
+     * @param name Name as {@code String}.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for presenter.
+     *
+     * @return Presenter as {@code String}.
+     */
     public String getPresenter() {
         return presenter;
     }
 
+    /**
+     * Setter for presenter.
+     *
+     * @param presenter Presenter as {@code String}.
+     */
     public void setPresenter(String presenter) {
         this.presenter = presenter;
     }
 
+    /**
+     * Getter for seminar.
+     *
+     * @return Seminar as {@code Seminar}.
+     */
     public Seminar getSeminar() {
         return seminar;
     }
 
+    /**
+     * Setter for seminar.
+     *
+     * @param seminar Seminar as {@code Seminar}.
+     */
     public void setSeminar(Seminar seminar) {
         this.seminar = seminar;
     }
 
+    /**
+     * Getter for seminarTopicID.
+     *
+     * @return ID as {@code int}.
+     */
     public int getSeminarTopicID() {
         return seminarTopicID;
     }
 
+    /**
+     * Setter for seminarTopicID.
+     *
+     * @param seminarTopicID ID as {@code int}.
+     */
     public void setSeminarTopicID(int seminarTopicID) {
         this.seminarTopicID = seminarTopicID;
     }
 
+    /**
+     * Setter for state.
+     *
+     * @param state State as {@code State}.
+     */
     public void setState(State state) {
         this.state = state;
     }
-
 }
