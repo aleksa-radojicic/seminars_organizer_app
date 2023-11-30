@@ -266,10 +266,6 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCreate;
