@@ -10,21 +10,56 @@ import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
 /**
+ * System operation used for retrieving a seminar from the database with a given
+ * ID.
+ *
+ * <p>
+ * Extends abstract system operation class {@code AbstractSO}.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
  */
 public class GetSeminarByIDSO extends AbstractSO {
 
+    /**
+     * A seminar retrieved from the database with a given ID as
+     * {@code List<Seminar>}.
+     */
     private Seminar seminar;
 
+    /**
+     * Checks if the sent object is instance of class {@code Integer}.
+     *
+     * @param arg Probably ID of the wanted seminar as {@code Integer}.
+     * @throws Exception When the sent object is not instance of class
+     * {@code Integer}.
+     */
     @Override
     protected void preconditions(Object arg) throws Exception {
+        if (arg == null || !(arg instanceof Integer)) {
+            throw new Exception("Послати објекат није одговарајућег типа");
+        }
     }
 
+    /**
+     * Getter for seminar.
+     *
+     * @return A seminar retrieved from the database with a given ID as
+     * {@code List<Seminar>}.
+     */
     public Seminar getSeminar() {
         return seminar;
     }
 
+    /**
+     * Retrieves a seminar from the database with a given ID and stores it in
+     * {@code seminar} attribute.
+     *
+     * @param arg ID of the wanted seminar as {@code int}.
+     * @throws Exception When an error happened while retrieving a seminar with
+     * a given ID.
+     */
     @Override
     protected void executeOperation(Object arg) throws Exception {
         int id = (int) arg;

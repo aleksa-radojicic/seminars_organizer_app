@@ -10,41 +10,91 @@ import com.fon.common.exceptions.ServerValidationException;
 import com.fon.server.system_operations.AbstractSO;
 
 /**
+ * System operation used when an administrator wants to log in to the
+ * application.
+ *
+ * <p>
+ * Extends abstract system operation class {@code AbstractSO}.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
  */
 public class LoginSO extends AbstractSO {
 
+    /**
+     * Logged admin retrieved from the database with all data as {@code Admin}.
+     */
     private Admin loggedAdmin;
 
+    /**
+     * Getter for loggedAdmin.
+     *
+     * @return Logged admin retrieved from the database with all data as
+     * {@code Admin}.
+     */
     public Admin getLoggedAdmin() {
         return loggedAdmin;
     }
 
+    /**
+     * Setter for loggedAdmin.
+     *
+     * @param loggedAdmin Logged admin retrieved from the database with all data
+     * as {@code Admin}.
+     */
     public void setLoggedAdmin(Admin loggedAdmin) {
         this.loggedAdmin = loggedAdmin;
     }
 
+    /**
+     * Checks if the sent object is instance of class {@code Admin} and that
+     * username and password are not empty.
+     *
+     * @param arg Probably instance of {@code Admin} class with filled username
+     * and password.
+     * @throws Exception When the sent object is not instance of class
+     * {@code Admin}.
+     */
     @Override
     protected void preconditions(Object arg) throws Exception {
+        Exception e = new Exception("Послати објекат није одговарајућег типа");
+
         if (arg == null || !(arg instanceof Admin)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw e;
+        }
+        Admin admin = (Admin) arg;
+
+        String username = admin.getUsername();
+        if (username == null) {
+            throw e;
+        }
+        
+        String password = admin.getPassword();
+        if (password == null) {
+            throw e;
         }
     }
 
+    /**
+     * Retrieves an admin with all data with entered credentials and stores it
+     * in {@code loggedAdmin} attribute.
+     *
+     * @param arg Instance of {@code Admin} class with filled username and
+     * password.
+     * @throws ServerValidationException When admin entered wrong username and /
+     * or password.
+     * @throws Exception When an error happened while retrieving an admin with
+     * all data.
+     */
     @Override
-    protected void executeOperation(Object arg) throws Exception {
+    protected void executeOperation(Object arg) throws ServerValidationException, Exception {
         Admin admin = (Admin) arg;
 
         String whereQuerySection = "WHERE username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'";
 
         List<Admin> admins = (List<Admin>) REPOSITORY.getByCondition(new Admin(), whereQuerySection);
-//        for (Admin a : admins) {
-//            if (a.getUsername().equals(admin.getUsername()) && a.getPassword().equals(admin.getPassword())) {
-//                loggedAdmin = a;
-//                return;
-//            }
-//        }
+
         if (admins.isEmpty()) {
             throw new ServerValidationException("Нетачно корисничко име или лозинка");
         }
