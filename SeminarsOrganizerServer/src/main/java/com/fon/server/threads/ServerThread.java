@@ -21,7 +21,7 @@ import java.util.LinkedList;
  * administrators.
  *
  * <p>
- * This class, that extends {@link Thread}, handles accepting client
+ * This class, that extends {@code Thread}, handles accepting client
  * connections, managing logged-in administrators, and performing server
  * shutdown operations when required.
  * </p>
@@ -33,30 +33,30 @@ public class ServerThread extends Thread {
 
     /**
      * The server socket used for handling client connections as
-     * {@link ServerSocket} (read only).
+     * {@code ServerSocket} (read only).
      *
      */
     private final ServerSocket serverSocket;
 
     /**
      * List of client handler threads managing connected clients as
-     * {@link List<ClientHandlerThread>}.
+     * {@code List<ClientHandlerThread>}.
      */
     private List<ClientHandlerThread> clientHandlers;
 
     /**
      * List of client handler threads representing logged-in administrators as
-     * {@link List<ClientHandlerThread>}.
+     * {@code List<ClientHandlerThread>}.
      */
     private List<ClientHandlerThread> loggedAdminsChs;
 
     /**
-     * Counter to track the number of connected clients as {@link int}.
+     * Counter to track the number of connected clients as {@code int}.
      */
     private int clientNumber;
 
     /**
-     * Reference to the server's form as {@link ServerForm}.
+     * Reference to the server's form as {@code ServerForm}.
      */
     private final ServerForm serverForm;
 
@@ -69,7 +69,7 @@ public class ServerThread extends Thread {
      * and initializes clientNumber to {@code 1}.
      * </p>
      *
-     * @param serverForm Reference to the server's form as {@link ServerForm}.
+     * @param serverForm Reference to the server's form as {@code ServerForm}.
      * @throws IOException If an I/O error occurs while loading configuration
      * file or while initializing serverSocket.
      */
@@ -88,7 +88,7 @@ public class ServerThread extends Thread {
      * Getter for serverSocket.
      *
      * @return The server socket used for handling client connections as
-     * {@link ServerSocket}.
+     * {@code ServerSocket}.
      */
     public ServerSocket getServerSocket() {
         return serverSocket;
@@ -98,7 +98,7 @@ public class ServerThread extends Thread {
      * Getter for clientHandlers.
      *
      * @return List of client handler threads managing connected clients as
-     * {@link List<ClientHandlerThread>}.
+     * {@code List<ClientHandlerThread>}.
      */
     public List<ClientHandlerThread> getClientHandlers() {
         return clientHandlers;
@@ -108,7 +108,7 @@ public class ServerThread extends Thread {
      * Setter for clientHandlers.
      *
      * @param clientHandlers List of client handler threads managing connected
-     * clients as {@link List<ClientHandlerThread>}.
+     * clients as {@code List<ClientHandlerThread>}.
      */
     public void setClientHandlers(List<ClientHandlerThread> clientHandlers) {
         this.clientHandlers = clientHandlers;
@@ -118,7 +118,7 @@ public class ServerThread extends Thread {
      * Getter for loggedAdminsChs.
      *
      * @return List of client handler threads representing logged-in
-     * administrators as {@link List<ClientHandlerThread>}.
+     * administrators as {@code List<ClientHandlerThread>}.
      */
     public List<ClientHandlerThread> getLoggedAdmins() {
         return loggedAdminsChs;
@@ -128,7 +128,7 @@ public class ServerThread extends Thread {
      * Setter for loggedAdminsChs.
      *
      * @param loggedAdmins List of client handler threads representing logged-in
-     * administrators as {@link List<ClientHandlerThread>}.
+     * administrators as {@code List<ClientHandlerThread>}.
      */
     public void setLoggedAdmins(List<ClientHandlerThread> loggedAdmins) {
         this.loggedAdminsChs = loggedAdmins;
@@ -140,7 +140,7 @@ public class ServerThread extends Thread {
      * <p>
      * This method is responsible for managing client connections by
      * continuously listening for incoming connections on the server socket. It
-     * accepts client connections, creates a {@link ClientHandlerThread} to
+     * accepts client connections, creates a {@code ClientHandlerThread} to
      * manage each client, and starts the threads.
      * </p>
      *
@@ -186,7 +186,7 @@ public class ServerThread extends Thread {
      * <p>
      * This method iterates through the list of {@code ClientHandlerThread}s
      * managing connected clients. For each client handler thread found, it
-     * invokes the {@link ClientHandlerThread#logout()} method to perform the
+     * invokes the {@code ClientHandlerThread#logout()} method to perform the
      * logout process for the associated client.
      * </p>
      */
@@ -201,10 +201,11 @@ public class ServerThread extends Thread {
     }
 
     /**
+     * Logouts single client using the passed {@code ClientHandlerThread}.
      *
-     *
-     * @param ch
-     * @throws IOException
+     * @param ch {@code ClientHandlerThread} representing client that needs to
+     * log out.
+     * @throws IOException When client exited application.
      */
     public void logout(ClientHandlerThread ch) throws IOException {
         removeAdminFromLoggedAdmins(ch);
@@ -214,7 +215,7 @@ public class ServerThread extends Thread {
     /**
      * Removes specific client handler from the clientHandlers list.
      *
-     * @param pr Specific {@link ClientHandlerThread} that needs to be removed.
+     * @param pr Specific {@code ClientHandlerThread} that needs to be removed.
      */
     private void removeClientHandler(ClientHandlerThread pr) {
         clientHandlers.remove(pr);
@@ -230,7 +231,7 @@ public class ServerThread extends Thread {
      * </p>
      *
      * @param ch Thread handling the client who wants to log in as
-     * {@link ClientHandlerThread}.
+     * {@code ClientHandlerThread}.
      */
     public void login(ClientHandlerThread ch) {
         System.out.println("Admin '" + ch.getLoggedAdmin().getFullName() + "' has logged in");
@@ -249,7 +250,7 @@ public class ServerThread extends Thread {
      * </p>
      *
      * @param ch Thread handling the client who wants to log out as
-     * {@link ClientHandlerThread}.
+     * {@code ClientHandlerThread}.
      */
     public void removeAdminFromLoggedAdmins(ClientHandlerThread ch) {
         if (loggedAdminsChs.contains(ch)) {
@@ -264,7 +265,7 @@ public class ServerThread extends Thread {
      * Checks if an admin is already logged in.
      *
      * <p>
-     * It extracts all {@link Admin}s from loggedAdminsChs and checks if an
+     * It extracts all {@code Admin}s from loggedAdminsChs and checks if an
      * admin is in the list of all logged admins.
      * </p>
      *
