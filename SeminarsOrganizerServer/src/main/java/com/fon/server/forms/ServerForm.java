@@ -29,7 +29,7 @@ public class ServerForm extends javax.swing.JFrame {
     /**
      * Creates new form ServerFrm
      */
-    public ServerForm() throws IOException {
+    public ServerForm() {
         initComponents();
         prepareForm();
         configExists = false;
@@ -218,7 +218,7 @@ public class ServerForm extends javax.swing.JFrame {
     private javax.swing.JTable tbl;
     // End of variables declaration//GEN-END:variables
 
-    private void prepareForm() throws IOException {
+    private void prepareForm() {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         prepareTable();

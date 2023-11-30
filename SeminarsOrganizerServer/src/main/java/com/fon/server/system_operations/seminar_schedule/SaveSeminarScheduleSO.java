@@ -11,11 +11,25 @@ import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
 /**
+ * System operation used for saving a given seminar schedule in the database.
+ *
+ * <p>
+ * Extends abstract system operation class {@code AbstractSO}.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
  */
 public class SaveSeminarScheduleSO extends AbstractSO {
 
+    /**
+     * Checks if the sent object is instance of class {@code SeminarSchedule}.
+     *
+     * @param arg Probably a seminar schedule ({@code SeminarSchedule}) that
+     * needs to be saved in the database.
+     * @throws Exception When the sent object is not instance of class
+     * {@code SeminarSchedule}.
+     */
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof SeminarSchedule)) {
@@ -23,6 +37,14 @@ public class SaveSeminarScheduleSO extends AbstractSO {
         }
     }
 
+    /**
+     * Saves a given seminar schedule in the database.
+     *
+     * @param arg A seminar schedule ({@code SeminarSchedule}) that needs to be
+     * saved in the database.
+     * @throws Exception When an error happened while saving a given seminar
+     * schedule.
+     */
     @Override
     protected void executeOperation(Object arg) throws Exception {
         SeminarSchedule seminarSchedule = (SeminarSchedule) arg;
@@ -45,8 +67,8 @@ public class SaveSeminarScheduleSO extends AbstractSO {
                 }
                 case DELETED -> {
                     String whereSection = "WHERE seminarScheduleID = "
-                            + seminarEnrollment.getSeminarSchedule().getSeminarScheduleID() 
-                            + " AND participantID = " 
+                            + seminarEnrollment.getSeminarSchedule().getSeminarScheduleID()
+                            + " AND participantID = "
                             + seminarEnrollment.getParticipant().getParticipantID();
                     REPOSITORY.delete(seminarEnrollment, whereSection);
                 }
@@ -54,7 +76,5 @@ public class SaveSeminarScheduleSO extends AbstractSO {
                     throw new AssertionError();
             }
         }
-
     }
-
 }

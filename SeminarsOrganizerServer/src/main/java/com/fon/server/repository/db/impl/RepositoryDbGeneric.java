@@ -14,8 +14,15 @@ import com.fon.server.repository.db.DbConnectionFactory;
 import com.fon.server.repository.db.DbRepository;
 
 /**
+ * Class representing generic database repository with MySQL implementation of
+ * implemented CRUD operations.
+ *
+ * <p>
+ * Implements {@code DbRepository<GenericEntity>} interface.
+ * </p>
  *
  * @author Aleksa
+ * @since 0.0.1
  */
 public class RepositoryDbGeneric implements DbRepository<GenericEntity> {
 
