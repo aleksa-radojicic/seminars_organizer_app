@@ -74,7 +74,6 @@ public abstract class GenericEntityTest {
         }
     }
 
-    @Test
     void test_setAttributeValues_null() {
         try {
             assertFalse(genericEntity.setAttributeValues() == null);
@@ -82,6 +81,11 @@ public abstract class GenericEntityTest {
             Logger.getLogger(GenericEntityTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
+    }
+
+    void test_setAttributeValues_notImplemented() {
+        assertThrowsExactly(UnsupportedOperationException.class,
+                () -> genericEntity.setAttributeValues());
     }
 
     void test_setAttributeValues(String attributeNamesAndValues) {

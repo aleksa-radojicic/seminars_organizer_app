@@ -63,6 +63,11 @@ public class AdminTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setAttributeValues_null() {
+        super.test_setAttributeValues_null();
+    }
+    
+    @Test
     void test_getID() {
         super.test_getID(admin.getAdminID());
     }
