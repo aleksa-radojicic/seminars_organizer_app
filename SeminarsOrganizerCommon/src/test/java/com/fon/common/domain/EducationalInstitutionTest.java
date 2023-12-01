@@ -145,23 +145,17 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     @ParameterizedTest
     @CsvSource({
         //all equal
-        IDString + "," + name + "," + address + ","
-        + IDString + "," + name + "," + address + ",true",
+        IDString + "," + name + "," + address + ",true",
         //all equal but educationalInstitutionID
-        IDString + "," + name + "," + address + ","
-        + IDStringOther + "," + name + "," + address + ",false",
+        IDStringOther + "," + name + "," + address + ",false",
         //all equal but name
-        IDString + "," + name + "," + address + ","
-        + IDString + "," + nameOther + "," + address + ",true",
+        IDString + "," + nameOther + "," + address + ",true",
         //all equal but address
-        IDString + "," + name + "," + address + ","
-        + IDString + "," + name + "," + addressOther + ",true"
+        IDString + "," + name + "," + addressOther + ",true"
     })
-    void test_equals(int ID1, String name1, String address1,
-            int ID2, String name2, String address2,
+    void test_equals(int ID2, String name2, String address2,
             boolean result) {
 
-        educationalInstitution = new EducationalInstitution(ID1, name1, address1);
         EducationalInstitution educationalInstitutionOther = new EducationalInstitution(ID2, name2, address2);
 
         assertEquals(result,

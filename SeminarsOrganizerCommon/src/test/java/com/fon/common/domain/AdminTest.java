@@ -66,7 +66,7 @@ public class AdminTest extends GenericEntityTest {
     void test_setAttributeValues_null() {
         super.test_setAttributeValues_null();
     }
-    
+
     @Test
     void test_getID() {
         super.test_getID(admin.getAdminID());
@@ -165,29 +165,21 @@ public class AdminTest extends GenericEntityTest {
     @ParameterizedTest
     @CsvSource({
         //all equal
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDString + "," + username + "," + password + "," + name + "," + surname + ",true",
+        adminIDString + "," + username + "," + password + "," + name + "," + surname + ",true",
         //all equal but adminID
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDStringOther + "," + username + "," + password + "," + name + "," + surname + ",false",
+        adminIDStringOther + "," + username + "," + password + "," + name + "," + surname + ",false",
         //all equal but username
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDString + "," + usernameOther + "," + password + "," + name + "," + surname + ",true",
+        adminIDString + "," + usernameOther + "," + password + "," + name + "," + surname + ",true",
         //all equal but password
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDString + "," + username + "," + passwordOther + "," + name + "," + surname + ",true",
+        adminIDString + "," + username + "," + passwordOther + "," + name + "," + surname + ",true",
         //all equal but name
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDString + "," + username + "," + password + "," + nameOther + "," + surname + ",true",
+        adminIDString + "," + username + "," + password + "," + nameOther + "," + surname + ",true",
         //all equal but surname
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ","
-        + adminIDString + "," + username + "," + password + "," + name + "," + surnameOther + ",true"
+        adminIDString + "," + username + "," + password + "," + name + "," + surnameOther + ",true"
     })
-    void test_equals(int adminID1, String username1, String password1, String name1, String surname1,
-            int adminID2, String username2, String password2, String name2, String surname2,
+    void test_equals(int adminID2, String username2, String password2, String name2, String surname2,
             boolean result) {
 
-        admin = new Admin(adminID1, username1, password1, name1, surname1);
         Admin adminOther = new Admin(adminID2, username2, password2, name2, surname2);
 
         assertEquals(result,
