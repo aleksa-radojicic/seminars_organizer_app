@@ -229,19 +229,8 @@ public class Participant implements GenericEntity {
 
     @Override
     public String getAttributeValues() {
-        StringBuilder result = new StringBuilder();
-        result.append(getParticipantID())
-                .append(", '")
-                .append(getName())
-                .append("','")
-                .append(getSurname())
-                .append("', '")
-                .append(getSex().toString())
-                .append("', '")
-                .append(new java.sql.Date(getDateBirth().getTime()))
-                .append("', ")
-                .append(getCreatedByAdmin().getAdminID());
-        return result.toString();
+        return String.format("%d, '%s', '%s', '%s', '%s', %d",
+                participantID, name, surname, sex, new java.sql.Date(dateBirth.getTime()), createdByAdmin.getAdminID());
     }
 
     /**
@@ -264,7 +253,7 @@ public class Participant implements GenericEntity {
 
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
-        return new Participant(rs.getInt(1), rs.getString(2), rs.getString(3), Sex.valueOf(rs.getString(4)), rs.getDate(5), null);
+        return new Participant(rs.getInt("participantID"), rs.getString("name"), rs.getString("surname"), Sex.valueOf(rs.getString("sex")), rs.getDate("dateBirth"), null);
     }
 
     /**
@@ -288,5 +277,10 @@ public class Participant implements GenericEntity {
         Date currentDate = new Date();
         Long age = (currentDate.getTime() - dateBirth.getTime()) / 1000 / 60 / 60 / 24 / 365;
         return age;
+    }
+
+    @Override
+    public String setAttributeValues() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
