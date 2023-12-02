@@ -297,7 +297,6 @@ public class SeminarTopicTest extends GenericEntityTest {
     @Test
     void test_toString() {
         String seminarTopicString = seminarTopic.toString();
-        System.out.println("seminar.toString() = " + seminarTopicString);
         assertTrue(seminarTopicString.contains(seminar.getSeminarID() + ""));
         assertTrue(seminarTopicString.contains(ID + ""));
         assertTrue(seminarTopicString.contains(name));

@@ -212,12 +212,12 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     @ParameterizedTest
-    @MethodSource("seminarEqualsProvider")
+    @MethodSource("seminarEqualsAllProvider")
     void test_equalsAll(Seminar s, Seminar sOther, boolean result) {
         assertEquals(result, s.equalsAll(sOther));
     }
 
-    static Stream<Arguments> seminarEqualsProvider() {
+    static Stream<Arguments> seminarEqualsAllProvider() {
         SeminarTopic st11 = new SeminarTopic(seminar, 11, "st11", "st name 11");
         SeminarTopic st12 = new SeminarTopic(seminar, 12, "st12", "st name 12");
         SeminarTopic st13 = new SeminarTopic(seminar, 13, "st13", "st name 13");
@@ -267,57 +267,57 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     private static Seminar getSeminarDSeminarID() throws ClassNotFoundException, Exception, IOException {
-        Seminar s2_diffID = Utility.getDeepCopy(seminar);
-        s2_diffID.setSeminarID(IDOther);
-        return s2_diffID;
+        Seminar s2_dID = Utility.getDeepCopy(seminar);
+        s2_dID.setSeminarID(IDOther);
+        return s2_dID;
     }
 
     private static Seminar getSeminarDName() throws IOException, ClassNotFoundException {
-        Seminar s2_diffName = Utility.getDeepCopy(seminar);
-        s2_diffName.setName(nameOther);
-        return s2_diffName;
+        Seminar s2_dName = Utility.getDeepCopy(seminar);
+        s2_dName.setName(nameOther);
+        return s2_dName;
     }
 
     private static Seminar getSeminarDDescription() throws IOException, ClassNotFoundException {
-        Seminar s2_diffDescription = Utility.getDeepCopy(seminar);
-        s2_diffDescription.setDescription(descriptionOther);
+        Seminar s2_dDescription = Utility.getDeepCopy(seminar);
+        s2_dDescription.setDescription(descriptionOther);
 
-        return s2_diffDescription;
+        return s2_dDescription;
     }
 
     private static Seminar getSeminarDCreatedByAdmin() throws IOException, ClassNotFoundException {
         Admin a2 = new Admin();
         a2.setAdminID(createdByAdminIDOther);
-        Seminar s2_diffCreatedByAdmin = Utility.getDeepCopy(seminar);
-        s2_diffCreatedByAdmin.setCreatedByAdmin(a2);
+        Seminar s2_dCreatedByAdmin = Utility.getDeepCopy(seminar);
+        s2_dCreatedByAdmin.setCreatedByAdmin(a2);
 
-        return s2_diffCreatedByAdmin;
+        return s2_dCreatedByAdmin;
     }
 
     private static Seminar getSeminarDTopics_dSize_otherLarger(List seminarTopics2) throws IOException, ClassNotFoundException {
-        Seminar s2_diffTopics_dSize_otherLarger = Utility.getDeepCopy(seminar);
+        Seminar s2_dTopics_dSize_otherLarger = Utility.getDeepCopy(seminar);
 
         List<SeminarTopic> seminarTopics2_dSize = Utility.getDeepCopy(seminarTopics2);
 
-        SeminarTopic st24 = new SeminarTopic(s2_diffTopics_dSize_otherLarger, 24, "st24", "st name 24");
+        SeminarTopic st24 = new SeminarTopic(s2_dTopics_dSize_otherLarger, 24, "st24", "st name 24");
         seminarTopics2_dSize.add(st24);
 
-        seminarTopics2_dSize.forEach((x) -> x.setSeminar(s2_diffTopics_dSize_otherLarger));
-        s2_diffTopics_dSize_otherLarger.setSeminarTopics(seminarTopics2_dSize);
+        seminarTopics2_dSize.forEach((x) -> x.setSeminar(s2_dTopics_dSize_otherLarger));
+        s2_dTopics_dSize_otherLarger.setSeminarTopics(seminarTopics2_dSize);
 
-        return s2_diffTopics_dSize_otherLarger;
+        return s2_dTopics_dSize_otherLarger;
     }
 
     private static Seminar getSeminarDTopics_dSize_otherSmaller(List seminarTopics2) throws IOException, ClassNotFoundException {
-        Seminar s2_diffTopics_dSize_otherSmaller = Utility.getDeepCopy(seminar);
+        Seminar s2_dTopics_dSize_otherSmaller = Utility.getDeepCopy(seminar);
 
         List<SeminarTopic> seminarTopics2_dSize = Utility.getDeepCopy(seminarTopics2);
         seminarTopics2_dSize.remove(0);
 
-        seminarTopics2_dSize.forEach((x) -> x.setSeminar(s2_diffTopics_dSize_otherSmaller));
-        s2_diffTopics_dSize_otherSmaller.setSeminarTopics(seminarTopics2_dSize);
+        seminarTopics2_dSize.forEach((x) -> x.setSeminar(s2_dTopics_dSize_otherSmaller));
+        s2_dTopics_dSize_otherSmaller.setSeminarTopics(seminarTopics2_dSize);
 
-        return s2_diffTopics_dSize_otherSmaller;
+        return s2_dTopics_dSize_otherSmaller;
     }
 
     @Test

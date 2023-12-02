@@ -262,9 +262,9 @@ public class SeminarSchedule implements GenericEntity {
 
     @Override
     public String setAttributeValues() {
-        return "datetimeBegins= '" + new java.sql.Timestamp(getDatetimeBegins().getTime()) + "',"
-                + "datetimeEnds= '" + new java.sql.Timestamp(getDatetimeEnds().getTime()) + "',"
-                + "seminarID=" + getSeminar().getSeminarID();
+        return "datetimeBegins = '" + new java.sql.Timestamp(getDatetimeBegins().getTime()) + "', "
+                + "datetimeEnds = '" + new java.sql.Timestamp(getDatetimeEnds().getTime()) + "', "
+                + "seminarID = " + getSeminar().getSeminarID();
     }
 
     @Override
@@ -274,7 +274,7 @@ public class SeminarSchedule implements GenericEntity {
                 rs.getTimestamp("datetimeEnds"),
                 null,
                 new Seminar(rs.getInt("seminarID"), rs.getString("s.name"), rs.getString("description"), null, null),
-                new EducationalInstitution(rs.getInt("educationalInstitutionID"), rs.getString("ei.name"), rs.getString("address")),
+                new EducationalInstitution(rs.getInt("educationalInstitutionID"), rs.getString("ei.name"), rs.getString("ei.address")),
                 null);
         return seminarSchedule;
     }
