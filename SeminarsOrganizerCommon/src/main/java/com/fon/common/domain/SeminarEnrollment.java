@@ -54,6 +54,19 @@ public class SeminarEnrollment implements GenericEntity {
     }
 
     /**
+     * Constructor with seminarSchedule and participant (composite primary key).
+     *
+     * @param seminarSchedule Seminar on the schedule participant is attending
+     * as {@code SeminarSchedule}.
+     * @param participant Participant attending the seminar on the schedule as
+     * {@code Participant}.
+     */
+    public SeminarEnrollment(SeminarSchedule seminarSchedule, Participant participant) {
+        this.seminarSchedule = seminarSchedule;
+        this.participant = participant;
+    }
+
+    /**
      * Constructor with all parameters except state.
      *
      * @param seminarSchedule Seminar on the schedule participant is attending
@@ -88,7 +101,14 @@ public class SeminarEnrollment implements GenericEntity {
      */
     @Override
     public String toString() {
-        return "SeminarEnrollment{" + "seminarSchedule=" + seminarSchedule + ", participant=" + participant + ", notes=" + notes + ", state=" + state + '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("SeminarEnrollment{");
+        sb.append("seminarSchedule=").append(seminarSchedule);
+        sb.append(", participant=").append(participant);
+        sb.append(", notes=").append(notes);
+        sb.append(", state=").append(state);
+        sb.append('}');
+        return sb.toString();
     }
 
     /**
@@ -208,6 +228,11 @@ public class SeminarEnrollment implements GenericEntity {
     }
 
     @Override
+    public String setAttributeValues() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
         SeminarEnrollment seminarEnrollment = new SeminarEnrollment(null,
                 new Participant(rs.getInt("participantID"), rs.getString("name"), rs.getString("surname"), Sex.valueOf(rs.getString("sex")), rs.getDate("dateBirth"), null),
@@ -220,6 +245,34 @@ public class SeminarEnrollment implements GenericEntity {
         return """
                SELECT se.`seminarScheduleID`, se.`participantID`, se.`notes`, p.`name`, p.`surname`, p.`dateBirth`, p.`sex` 
                FROM `seminarenrollments` se JOIN `participants` p ON se.`participantID` = p.`participantID`""";
+    }
+
+    /**
+     * This method is not implemented.
+     *
+     * @throws UnsupportedOperationException Signifies the method is not yet
+     * supported.
+     */
+    @Override
+    public int getID() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /**
+     * This method is not implemented.
+     *
+     * @param id Not used.
+     * @throws UnsupportedOperationException Signifies the method is not yet
+     * supported.
+     */
+    @Override
+    public void setID(int id) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String getQueryCondition() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

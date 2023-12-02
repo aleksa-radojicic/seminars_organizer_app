@@ -38,6 +38,15 @@ public class EducationalInstitution implements GenericEntity {
     private String address;
 
     /**
+     * Constructor with educationalInstitutionID (primary key).
+     *
+     * @param educationalInstitutionID ID as integer.
+     */
+    public EducationalInstitution(int educationalInstitutionID) {
+        this.educationalInstitutionID = educationalInstitutionID;
+    }
+
+    /**
      * Constructor with all parameters.
      *
      * @param educationalInstitutionID ID as integer.
@@ -165,8 +174,9 @@ public class EducationalInstitution implements GenericEntity {
 
     /**
      * This method is not implemented.
-     * 
-     * @throws UnsupportedOperationException Signifies the method is not yet supported.
+     *
+     * @throws UnsupportedOperationException Signifies the method is not yet
+     * supported.
      */
     @Override
     public State getState() {

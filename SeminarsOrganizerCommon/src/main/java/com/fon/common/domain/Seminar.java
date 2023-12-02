@@ -6,6 +6,7 @@ package com.fon.common.domain;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,9 +47,9 @@ public class Seminar implements GenericEntity {
 
     /**
      * List of all SeminarTopics that the Seminar contains as
-     * {@code List<SeminarTopic>}.
+     * {@code List<SeminarTopic>}, default is an empty linked list.
      */
-    private List<SeminarTopic> seminarTopics;
+    private List<SeminarTopic> seminarTopics = new LinkedList();
 
     /**
      * Seminar's state as {@code State}, default is {@code State.UNCHANGED}.
@@ -59,6 +60,15 @@ public class Seminar implements GenericEntity {
      * Non-parametric constructor.
      */
     public Seminar() {
+    }
+
+    /**
+     * Constructor with seminarID (primary key).
+     *
+     * @param seminarID ID as {@code int}.
+     */
+    public Seminar(int seminarID) {
+        this.seminarID = seminarID;
     }
 
     /**
@@ -80,6 +90,21 @@ public class Seminar implements GenericEntity {
         this.seminarTopics = seminarTopics;
     }
 
+    /**
+     * Constructor with all parameters except state, createdByAdmin and
+     * seminarTopics. Initializes createdByAdmin to {@code new Admin()}.
+     *
+     * @param seminarID ID as {@code int}.
+     * @param name Name as {@code String}.
+     * @param description Description as {@code String}.
+     */
+    public Seminar(int seminarID, String name, String description) {
+        this.seminarID = seminarID;
+        this.name = name;
+        this.description = description;
+        createdByAdmin = new Admin();
+    }
+
     @Override
     public String getAttributeNames() {
         return "seminarID, name, description, createdByAdminID";
@@ -87,26 +112,17 @@ public class Seminar implements GenericEntity {
 
     @Override
     public String getAttributeValues() throws Exception {
-        StringBuilder result = new StringBuilder();
-        result
-                .append(seminarID)
-                .append(", '")
-                .append(name)
-                .append("', '")
-                .append(description)
-                .append("', ")
-                .append(createdByAdmin.getAdminID());
-        return result.toString();
+        return String.format("%d, '%s', '%s', %d", seminarID, name, description, createdByAdmin.getAdminID());
     }
 
     @Override
     public String setAttributeValues() {
-        return "seminarID = " + seminarID + ", name = '" + name + "', description = '" + description + "'";
+        return String.format("seminarID = %d, name ='%s', description = '%s'", seminarID, name, description);
     }
 
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
-        Seminar seminar = new Seminar(rs.getInt(1), rs.getString(2), rs.getString(3), null, null);
+        Seminar seminar = new Seminar(rs.getInt("seminarID"), rs.getString("name"), rs.getString("description"), null, null);
         return seminar;
     }
 
@@ -148,8 +164,8 @@ public class Seminar implements GenericEntity {
     }
 
     /**
-     * Equals method which compares all attributes except createdByAdmin. Used in
-     * a form for updating seminars to check if the Seminar is changed.
+     * Equals method which compares all attributes except createdByAdmin. Used
+     * in a form for updating seminars to check if the Seminar is changed.
      *
      * @param obj
      * @return {@code true} if all attributes except createdByAdmin are equal

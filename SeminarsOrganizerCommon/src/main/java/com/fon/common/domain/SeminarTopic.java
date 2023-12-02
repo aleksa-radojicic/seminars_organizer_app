@@ -59,6 +59,17 @@ public class SeminarTopic implements GenericEntity {
     }
 
     /**
+     * Constructor with seminar and seminarTopicID (composite primary key).
+     *
+     * @param seminar Seminar that contains the SeminarTopic as {@code Seminar}.
+     * @param seminarTopicID ID as {@code int}.
+     */
+    public SeminarTopic(Seminar seminar, int seminarTopicID) {
+        this.seminar = seminar;
+        this.seminarTopicID = seminarTopicID;
+    }
+
+    /**
      * Constructor with all parameters except state.
      *
      * @param seminar Seminar that contains the SeminarTopic as {@code Seminar}.
@@ -105,25 +116,13 @@ public class SeminarTopic implements GenericEntity {
 
     @Override
     public String getAttributeValues() {
-        StringBuilder result = new StringBuilder();
-        result
-                .append(seminar.getSeminarID())
-                .append(", ")
-                .append(seminarTopicID)
-                .append(", '")
-                .append(name)
-                .append("', '")
-                .append(presenter)
-                .append("'");
-        return result.toString();
+        return String.format("%d, %d, '%s', '%s'",
+                seminar.getSeminarID(), seminarTopicID, name, presenter);
     }
 
     @Override
     public String setAttributeValues() {
-        return "seminarID=" + getSeminar().getSeminarID() + ", "
-                + "seminarTopicID= " + seminarTopicID + ","
-                + "name= '" + getName() + "',"
-                + "presenter= '" + getPresenter() + "'";
+        return String.format("seminarID = %d, seminarTopicID = %d, name = '%s', presenter = '%s'", seminar.getSeminarID(), seminarTopicID, name, presenter);
     }
 
     /**
@@ -141,7 +140,7 @@ public class SeminarTopic implements GenericEntity {
 
     /**
      * Equals method which compares all attributes.Used in a form for updating
- seminars to check if the Seminar is changed.
+     * seminars to check if the Seminar is changed.
      *
      * @param obj
      * @return {@code true} if all attributes are equal, otherwise
@@ -229,7 +228,7 @@ public class SeminarTopic implements GenericEntity {
 
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
-        SeminarTopic st = new SeminarTopic(null, rs.getInt(2), rs.getString(3), rs.getString(4));
+        SeminarTopic st = new SeminarTopic(null, rs.getInt("seminarTopicID"), rs.getString("name"), rs.getString("presenter"));
         return st;
     }
 
