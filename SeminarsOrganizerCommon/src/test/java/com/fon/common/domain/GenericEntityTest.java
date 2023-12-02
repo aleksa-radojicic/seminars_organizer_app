@@ -53,25 +53,33 @@ public abstract class GenericEntityTest {
         }
     }
 
-    void test_getID(int adminID) {
+    void test_getID(int actualID) {
         try {
-            assertEquals(genericEntity.getID(), adminID);
+            assertEquals(genericEntity.getID(), actualID);
         } catch (Exception ex) {
             Logger.getLogger(GenericEntityTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
     }
 
-    @Test
-    void test_setID() {
+    void test_getID_notImplemented() {
+        assertThrowsExactly(UnsupportedOperationException.class,
+                () -> genericEntity.getID());
+    }
+
+    void test_setID(int testID) {
         try {
-            int testValue = 2;
-            genericEntity.setID(testValue);
-            assertEquals(genericEntity.getID(), testValue);
+            genericEntity.setID(testID);
+            assertEquals(genericEntity.getID(), testID);
         } catch (Exception ex) {
             Logger.getLogger(AdminTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
+    }
+
+    void test_setID_notImplemented() {
+        assertThrowsExactly(UnsupportedOperationException.class,
+                () -> genericEntity.setID(1));
     }
 
     void test_setAttributeValues_null() {
@@ -113,6 +121,11 @@ public abstract class GenericEntityTest {
             Logger.getLogger(GenericEntityTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
+    }
+
+    void test_getQueryCondition_notImplemented() {
+        assertThrowsExactly(UnsupportedOperationException.class,
+                () -> genericEntity.getQueryCondition());
     }
 
     void test_getState_notImplemented() {

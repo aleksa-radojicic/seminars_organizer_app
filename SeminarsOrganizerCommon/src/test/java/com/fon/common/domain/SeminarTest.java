@@ -80,6 +80,11 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setID() {
+        super.test_setID(seminar.getSeminarID());
+    }
+
+    @Test
     void test_setAttributeValues() {
         String expectedValue = String.format("seminarID = %d, name ='%s', description = '%s'", ID, name, description);
         assertEquals(expectedValue, seminar.setAttributeValues());
@@ -243,7 +248,7 @@ public class SeminarTest extends GenericEntityTest {
 
             //all equal but seminarTopics sizes differ - other is larger
             Seminar s2_dTopics_dSize_otherLarger = getSeminarDTopics_dSize_otherLarger(seminarTopics2);
-            
+
             //all equal but seminarTopics - different list sizes
             Seminar s2_dTopics_dSize_otherSmaller = getSeminarDTopics_dSize_otherSmaller(seminarTopics2);
             return Stream.of(

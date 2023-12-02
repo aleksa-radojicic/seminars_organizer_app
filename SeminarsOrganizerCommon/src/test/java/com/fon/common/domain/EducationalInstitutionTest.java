@@ -64,6 +64,11 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setID() {
+        super.test_setID(educationalInstitution.getEducationalInstitutionID());
+    }
+
+    @Test
     void test_setAttributeValues_null() {
         super.test_setAttributeValues_null();
     }

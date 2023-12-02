@@ -86,6 +86,11 @@ public class SeminarTopicTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setID() {
+        super.test_setID(seminarTopic.getSeminarTopicID());
+    }
+
+    @Test
     void test_setAttributeValues() {
         String expectedValue = String.format("seminarID = %d, seminarTopicID = %d, name = '%s', presenter = '%s'", seminarID, ID, name, presenter);
         assertEquals(expectedValue, seminarTopic.setAttributeValues());

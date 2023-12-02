@@ -77,6 +77,11 @@ public class ParticipantTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setID() {
+        super.test_setID(participant.getParticipantID());
+    }
+
+    @Test
     void test_setAttributeValues() {
         super.test_setAttributeValues_notImplemented();
     }
