@@ -32,14 +32,16 @@ public class SeminarSchedule implements GenericEntity {
     private int seminarScheduleID;
 
     /**
-     * SeminarSchedule's beginning date and time as {@code Date}.
+     * SeminarSchedule's beginning date and time as {@code Date}, default is
+     * today's date.
      */
-    private Date datetimeBegins;
+    private Date datetimeBegins = new Date();
 
     /**
-     * SeminarSchedule's end date and time as {@code Date}.
+     * SeminarSchedule's end date and time as {@code Date}, default is today's
+     * date.
      */
-    private Date datetimeEnds;
+    private Date datetimeEnds = new Date();
 
     /**
      * Admin who created the SeminarSchedule as {@code Admin}.
@@ -59,9 +61,9 @@ public class SeminarSchedule implements GenericEntity {
 
     /**
      * List of all SeminarEnrollments that the SeminarSchedule contains as
-     * {@code List<SeminarEnrollment>}.
+     * {@code List<SeminarEnrollment>}, default is an empty linked list.
      */
-    private List<SeminarEnrollment> seminarEnrollments;
+    private List<SeminarEnrollment> seminarEnrollments = new LinkedList();
 
     /**
      * Seminar's state as {@code State}, default is {@code State.UNCHANGED}.
@@ -69,11 +71,18 @@ public class SeminarSchedule implements GenericEntity {
     private State state = State.UNCHANGED;
 
     /**
-     * Non-parametric constructor. Initializes seminarEnrollments to an empty
-     * list.
+     * Non-parametric constructor.
      */
     public SeminarSchedule() {
-        seminarEnrollments = new LinkedList();
+    }
+
+    /**
+     * Constructor with seminarScheduleID (primary key).
+     *
+     * @param seminarScheduleID ID as {@code int}.
+     */
+    public SeminarSchedule(int seminarScheduleID) {
+        this.seminarScheduleID = seminarScheduleID;
     }
 
     /**

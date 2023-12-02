@@ -47,9 +47,9 @@ public class Seminar implements GenericEntity {
 
     /**
      * List of all SeminarTopics that the Seminar contains as
-     * {@code List<SeminarTopic>}.
+     * {@code List<SeminarTopic>}, default is an empty linked list.
      */
-    private List<SeminarTopic> seminarTopics;
+    private List<SeminarTopic> seminarTopics = new LinkedList();
 
     /**
      * Seminar's state as {@code State}, default is {@code State.UNCHANGED}.
@@ -60,6 +60,15 @@ public class Seminar implements GenericEntity {
      * Non-parametric constructor.
      */
     public Seminar() {
+    }
+
+    /**
+     * Constructor with seminarID (primary key).
+     *
+     * @param seminarID ID as {@code int}.
+     */
+    public Seminar(int seminarID) {
+        this.seminarID = seminarID;
     }
 
     /**
@@ -83,8 +92,7 @@ public class Seminar implements GenericEntity {
 
     /**
      * Constructor with all parameters except state, createdByAdmin and
-     * seminarTopics. Initializes createdByAdmin to {@code new Admin()} and
-     * seminarTopics to an empty {@code LinkedList}.
+     * seminarTopics. Initializes createdByAdmin to {@code new Admin()}.
      *
      * @param seminarID ID as {@code int}.
      * @param name Name as {@code String}.
@@ -95,7 +103,6 @@ public class Seminar implements GenericEntity {
         this.name = name;
         this.description = description;
         createdByAdmin = new Admin();
-        seminarTopics = new LinkedList();
     }
 
     @Override

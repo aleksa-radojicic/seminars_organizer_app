@@ -38,19 +38,28 @@ public class Participant implements GenericEntity {
     private String surname;
 
     /**
-     * Participant's sex as {@code Sex}.
+     * Participant's sex as {@code Sex}, default is {@code Sex.MALE}.
      */
-    private Sex sex;
+    private Sex sex = Sex.MALE;
 
     /**
-     * Participant's date of birth as {@code Date}.
+     * Participant's date of birth as {@code Date}, default is today's date.
      */
-    private Date dateBirth;
+    private Date dateBirth = new Date();
 
     /**
      * Admin who created the Participant as {@code Admin}.
      */
     private Admin createdByAdmin;
+
+    /**
+     * Constructor with participantID (primary key).
+     *
+     * @param participantID ID as {@code int}.
+     */
+    public Participant(int participantID) {
+        this.participantID = participantID;
+    }
 
     /**
      * Constructor with all parameters.

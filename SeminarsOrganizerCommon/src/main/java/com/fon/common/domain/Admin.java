@@ -55,6 +55,15 @@ public class Admin implements GenericEntity {
     }
 
     /**
+     * Constructor with adminID (primary key).
+     *
+     * @param adminID ID as integer.
+     */
+    public Admin(int adminID) {
+        this.adminID = adminID;
+    }
+
+    /**
      * Constructor with all parameters.
      *
      * @param adminID ID as integer.

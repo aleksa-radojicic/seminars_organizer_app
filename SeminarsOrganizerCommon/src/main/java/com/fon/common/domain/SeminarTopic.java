@@ -59,6 +59,17 @@ public class SeminarTopic implements GenericEntity {
     }
 
     /**
+     * Constructor with seminar and seminarTopicID (composite primary key).
+     *
+     * @param seminar Seminar that contains the SeminarTopic as {@code Seminar}.
+     * @param seminarTopicID ID as {@code int}.
+     */
+    public SeminarTopic(Seminar seminar, int seminarTopicID) {
+        this.seminar = seminar;
+        this.seminarTopicID = seminarTopicID;
+    }
+
+    /**
      * Constructor with all parameters except state.
      *
      * @param seminar Seminar that contains the SeminarTopic as {@code Seminar}.
