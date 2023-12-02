@@ -15,4 +15,5 @@ public interface ServerConstants {
     public static final String DB_CONFIG_PASSWORD = "password";
     public static final String SERVER_CONFIG_FILE_PATH = "config/serverconfig.properties";
     public static final String SERVER_CONFIG_PORT = "port";
+    public static final String INCORRECT_TYPE_ERROR_MESSAGE = "The sent object is not of the appropriate type!";
 }

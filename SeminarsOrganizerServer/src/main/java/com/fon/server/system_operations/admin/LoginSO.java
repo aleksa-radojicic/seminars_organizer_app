@@ -7,6 +7,7 @@ package com.fon.server.system_operations.admin;
 import java.util.List;
 import com.fon.common.domain.Admin;
 import com.fon.common.exceptions.ServerValidationException;
+import com.fon.server.constants.ServerConstants;
 import com.fon.server.system_operations.AbstractSO;
 
 /**
@@ -58,21 +59,19 @@ public class LoginSO extends AbstractSO {
      */
     @Override
     protected void preconditions(Object arg) throws Exception {
-        Exception e = new Exception("Послати објекат није одговарајућег типа");
-
         if (arg == null || !(arg instanceof Admin)) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
         Admin admin = (Admin) arg;
 
         String username = admin.getUsername();
         if (username == null) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
         
         String password = admin.getPassword();
         if (password == null) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 

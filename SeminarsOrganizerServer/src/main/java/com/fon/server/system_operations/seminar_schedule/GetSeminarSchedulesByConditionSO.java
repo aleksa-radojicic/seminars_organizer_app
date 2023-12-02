@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 import com.fon.common.utils.Utility;
+import com.fon.server.constants.ServerConstants;
 
 /**
  * System operation used for retrieving seminar schedules from the database that
@@ -42,25 +43,23 @@ public class GetSeminarSchedulesByConditionSO extends AbstractSO {
      */
     @Override
     protected void preconditions(Object arg) throws Exception {
-        Exception e = new Exception("Послати објекат није одговарајућег типа");
-        
         if (arg == null || !(arg instanceof List)) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
 
         List list = (List<Object>) arg;
         if (list.size() != 2) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
 
         Object firstElement = list.get(0);
         if (firstElement == null || !(firstElement instanceof String)) {
-            throw e;
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
 
         Object secondElement = list.get(1);
-        if (secondElement == null || !(secondElement instanceof Date)) {
-            throw e;
+        if (secondElement != null && !(secondElement instanceof Date)) {
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
