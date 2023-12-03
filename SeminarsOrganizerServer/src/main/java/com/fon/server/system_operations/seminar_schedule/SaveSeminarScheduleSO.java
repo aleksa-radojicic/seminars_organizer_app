@@ -7,6 +7,7 @@ package com.fon.server.system_operations.seminar_schedule;
 import com.fon.common.domain.SeminarEnrollment;
 import com.fon.common.domain.SeminarSchedule;
 import com.fon.common.domain.State;
+import com.fon.server.constants.ServerConstants;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
@@ -33,7 +34,7 @@ public class SaveSeminarScheduleSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof SeminarSchedule)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 

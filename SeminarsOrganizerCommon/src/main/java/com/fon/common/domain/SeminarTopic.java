@@ -122,7 +122,7 @@ public class SeminarTopic implements GenericEntity {
 
     @Override
     public String setAttributeValues() {
-        return String.format("seminarID = %d, seminarTopicID = %d, name = '%s', presenter = '%s'", seminar.getSeminarID(), seminarTopicID, name, presenter);
+        return String.format("name = '%s', presenter = '%s'", name, presenter);
     }
 
     /**
@@ -230,6 +230,11 @@ public class SeminarTopic implements GenericEntity {
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
         SeminarTopic st = new SeminarTopic(null, rs.getInt("seminarTopicID"), rs.getString("name"), rs.getString("presenter"));
         return st;
+    }
+
+    @Override
+    public String getQueryCondition() throws Exception {
+        return String.format("seminarID = %d AND seminarTopicID = %d ", seminar.getSeminarID(), seminarTopicID);
     }
 
     @Override

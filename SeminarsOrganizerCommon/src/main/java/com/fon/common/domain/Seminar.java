@@ -117,7 +117,7 @@ public class Seminar implements GenericEntity {
 
     @Override
     public String setAttributeValues() {
-        return String.format("seminarID = %d, name ='%s', description = '%s'", seminarID, name, description);
+        return String.format("name ='%s', description = '%s'", name, description);
     }
 
     @Override

@@ -86,7 +86,7 @@ public class SeminarTest extends GenericEntityTest {
 
     @Test
     void test_setAttributeValues() {
-        String expectedValue = String.format("seminarID = %d, name ='%s', description = '%s'", ID, name, description);
+        String expectedValue = String.format("name ='%s', description = '%s'", name, description);
         assertEquals(expectedValue, seminar.setAttributeValues());
     }
 
