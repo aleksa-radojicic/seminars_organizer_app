@@ -89,19 +89,21 @@ public class GetSeminarSchedulesByConditionSO extends AbstractSO {
 
         List<SeminarSchedule> seminarSchedules_ = REPOSITORY.getByCondition(new SeminarSchedule(), whereQuerySeminarScheduleSection);
 
-        if (seminarSchedules_ != null) {
-            for (SeminarSchedule seminarSchedule : seminarSchedules_) {
-                String whereQuerySeminarEnrollmentSection = "WHERE seminarScheduleID = " + seminarSchedule.getSeminarScheduleID();
-
-                List<SeminarEnrollment> seminarEnrollments = REPOSITORY.getByCondition(new SeminarEnrollment(), whereQuerySeminarEnrollmentSection);
-                seminarSchedule.setSeminarEnrollments(seminarEnrollments);
-
-                for (SeminarEnrollment seminarEnrollment : seminarEnrollments) {
-                    seminarEnrollment.setSeminarSchedule(seminarSchedule);
-                }
-            }
-            seminarSchedules = seminarSchedules_;
+        if (seminarSchedules_.isEmpty()) {
+            return;
         }
+
+        for (SeminarSchedule seminarSchedule : seminarSchedules_) {
+            String whereQuerySeminarEnrollmentSection = "WHERE seminarScheduleID = " + seminarSchedule.getSeminarScheduleID();
+
+            List<SeminarEnrollment> seminarEnrollments = REPOSITORY.getByCondition(new SeminarEnrollment(), whereQuerySeminarEnrollmentSection);
+            seminarSchedule.setSeminarEnrollments(seminarEnrollments);
+
+            for (SeminarEnrollment seminarEnrollment : seminarEnrollments) {
+                seminarEnrollment.setSeminarSchedule(seminarSchedule);
+            }
+        }
+        seminarSchedules = seminarSchedules_;
     }
 
     /**
@@ -154,8 +156,8 @@ public class GetSeminarSchedulesByConditionSO extends AbstractSO {
     }
 
     /**
-     * Creates the WHERE query section regarding seminar schedule date and
-     * time condition.
+     * Creates the WHERE query section regarding seminar schedule date and time
+     * condition.
      *
      * @param date Date and time seminar schedule condition as {@code Date}.
      * @return WHERE query section regarding seminar schedule date and time
