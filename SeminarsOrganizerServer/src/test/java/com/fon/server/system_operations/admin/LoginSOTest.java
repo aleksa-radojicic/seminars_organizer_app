@@ -90,7 +90,7 @@ public class LoginSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> loginSO.executeOperation(admin));
+            assertDoesNotThrow(() -> loginSO.execute(admin));
 
         } catch (Exception ex) {
             Logger.getLogger(LoginSOTest.class
@@ -105,7 +105,7 @@ public class LoginSOTest {
         try {
             admin.setUsername(username + "Other");
             assertThrowsExactly(ServerValidationException.class,
-                    () -> loginSO.executeOperation(admin));
+                    () -> loginSO.execute(admin));
 
         } catch (Exception ex) {
             Logger.getLogger(LoginSOTest.class
@@ -120,7 +120,7 @@ public class LoginSOTest {
         try {
             admin.setPassword(password + "Other");
             assertThrowsExactly(ServerValidationException.class,
-                    () -> loginSO.executeOperation(admin));
+                    () -> loginSO.execute(admin));
 
         } catch (Exception ex) {
             Logger.getLogger(LoginSOTest.class

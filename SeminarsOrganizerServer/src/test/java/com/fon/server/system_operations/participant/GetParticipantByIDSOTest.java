@@ -69,7 +69,7 @@ public class GetParticipantByIDSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation_doesntExist() {
         try {
-            assertDoesNotThrow(() -> gpbidSO.executeOperation(-filterID));
+            assertDoesNotThrow(() -> gpbidSO.execute(-filterID));
 
             assertEquals(gpbidSO.getElement(), null);
         } catch (Exception ex) {
@@ -82,7 +82,7 @@ public class GetParticipantByIDSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> gpbidSO.executeOperation(filterID));
+            assertDoesNotThrow(() -> gpbidSO.execute(filterID));
 
             Participant pOther = gpbidSO.getElement();
 

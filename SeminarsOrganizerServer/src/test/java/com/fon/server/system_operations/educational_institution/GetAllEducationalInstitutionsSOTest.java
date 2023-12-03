@@ -38,7 +38,7 @@ public class GetAllEducationalInstitutionsSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> gaeiSO.executeOperation(null));
+            assertDoesNotThrow(() -> gaeiSO.execute(null));
 
             List<EducationalInstitution> element = gaeiSO.getElement();
 

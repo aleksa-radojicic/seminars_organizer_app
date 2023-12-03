@@ -38,7 +38,7 @@ public class GetAllParticipantsSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> gapSO.executeOperation(null));
+            assertDoesNotThrow(() -> gapSO.execute(null));
 
             List<Participant> allParticipants = gapSO.getAllParticipants();
 

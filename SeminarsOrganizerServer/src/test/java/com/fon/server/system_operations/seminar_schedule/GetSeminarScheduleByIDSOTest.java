@@ -86,7 +86,7 @@ public class GetSeminarScheduleByIDSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation_doesntExist() {
         try {
-            assertDoesNotThrow(() -> gssbidSO.executeOperation(-filterID));
+            assertDoesNotThrow(() -> gssbidSO.execute(-filterID));
 
             assertEquals(gssbidSO.getSeminarSchedule(), null);
         } catch (Exception ex) {
@@ -99,7 +99,7 @@ public class GetSeminarScheduleByIDSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> gssbidSO.executeOperation(filterID));
+            assertDoesNotThrow(() -> gssbidSO.execute(filterID));
 
             SeminarSchedule ssOther = gssbidSO.getSeminarSchedule();
 

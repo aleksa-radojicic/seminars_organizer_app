@@ -38,7 +38,7 @@ public class GetAllSeminarsSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
-            assertDoesNotThrow(() -> gasSO.executeOperation(null));
+            assertDoesNotThrow(() -> gasSO.execute(null));
 
             List<Seminar> allSeminars = gasSO.getAllSeminars();
 
