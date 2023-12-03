@@ -6,6 +6,7 @@ package com.fon.server.system_operations.seminar_schedule;
 
 import com.fon.common.domain.SeminarEnrollment;
 import com.fon.common.domain.SeminarSchedule;
+import com.fon.server.constants.ServerConstants;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
@@ -38,7 +39,7 @@ public class GetSeminarScheduleByIDSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof Integer)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -69,17 +70,19 @@ public class GetSeminarScheduleByIDSO extends AbstractSO {
         seminarSchedule = null;
         List<SeminarSchedule> seminarSchedules = (List<SeminarSchedule>) REPOSITORY.getByCondition(new SeminarSchedule(), whereSeminarScheduleQuerySection);
 
-        if (seminarSchedules != null) {
-            seminarSchedule = seminarSchedules.get(0);
+        if (seminarSchedules.isEmpty()) {
+            return;
+        }
 
-            String whereSeminarEnrollmentQuerySection = "WHERE seminarScheduleID = " + seminarSchedule.getSeminarScheduleID();
+        seminarSchedule = seminarSchedules.get(0);
 
-            List<SeminarEnrollment> seminarEnrollments = REPOSITORY.getByCondition(new SeminarEnrollment(), whereSeminarEnrollmentQuerySection);
-            seminarSchedule.setSeminarEnrollments(seminarEnrollments);
+        String whereSeminarEnrollmentQuerySection = "WHERE seminarScheduleID = " + seminarSchedule.getSeminarScheduleID();
 
-            for (SeminarEnrollment seminarEnrollment : seminarEnrollments) {
-                seminarEnrollment.setSeminarSchedule(seminarSchedule);
-            }
+        List<SeminarEnrollment> seminarEnrollments = REPOSITORY.getByCondition(new SeminarEnrollment(), whereSeminarEnrollmentQuerySection);
+        seminarSchedule.setSeminarEnrollments(seminarEnrollments);
+
+        for (SeminarEnrollment seminarEnrollment : seminarEnrollments) {
+            seminarEnrollment.setSeminarSchedule(seminarSchedule);
         }
     }
 }

@@ -5,6 +5,7 @@
 package com.fon.server.system_operations.participant;
 
 import com.fon.common.domain.Participant;
+import com.fon.server.constants.ServerConstants;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
@@ -37,7 +38,7 @@ public class GetParticipantByIDSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof Integer)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -64,7 +65,7 @@ public class GetParticipantByIDSO extends AbstractSO {
         int id = (int) arg;
         element = null;
         List<Participant> list = (List<Participant>) REPOSITORY.getByCondition(new Participant(), "WHERE participantID = " + id);
-        if (list != null) {
+        if (!list.isEmpty()) {
             element = list.get(0);
         }
     }

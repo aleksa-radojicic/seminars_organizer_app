@@ -6,6 +6,7 @@ package com.fon.server.system_operations.seminar;
 
 import com.fon.common.domain.Seminar;
 import com.fon.common.domain.SeminarTopic;
+import com.fon.server.constants.ServerConstants;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 
@@ -38,7 +39,7 @@ public class GetSeminarByIDSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof Integer)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -66,6 +67,9 @@ public class GetSeminarByIDSO extends AbstractSO {
         seminar = null;
         List<Seminar> seminars = REPOSITORY.getByCondition(new Seminar(), "WHERE seminarID =" + id);
 
+        if (seminars.isEmpty())
+            return;
+        
         seminar = seminars.get(0);
 
         List<SeminarTopic> seminarTopics = REPOSITORY.getByCondition(new SeminarTopic(), " WHERE seminarID = " + seminar.getSeminarID());
