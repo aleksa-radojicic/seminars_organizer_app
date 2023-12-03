@@ -262,7 +262,12 @@ public class Participant implements GenericEntity {
 
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
-        return new Participant(rs.getInt("participantID"), rs.getString("name"), rs.getString("surname"), Sex.valueOf(rs.getString("sex")), rs.getDate("dateBirth"), null);
+        return new Participant(rs.getInt("participantID"), 
+                rs.getString("name"), 
+                rs.getString("surname"), 
+                Sex.valueOf(rs.getString("sex")), 
+                new Date(rs.getDate("dateBirth").getTime()), 
+                null);
     }
 
     /**

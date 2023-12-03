@@ -270,8 +270,8 @@ public class SeminarSchedule implements GenericEntity {
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
         SeminarSchedule seminarSchedule = new SeminarSchedule(rs.getInt("ss.seminarScheduleID"),
-                rs.getTimestamp("datetimeBegins"),
-                rs.getTimestamp("datetimeEnds"),
+                new Date(rs.getTimestamp("datetimeBegins").getTime()),
+                new Date(rs.getTimestamp("datetimeEnds").getTime()),
                 null,
                 new Seminar(rs.getInt("seminarID"), rs.getString("s.name"), rs.getString("description"), null, null),
                 new EducationalInstitution(rs.getInt("educationalInstitutionID"), rs.getString("ei.name"), rs.getString("ei.address")),
