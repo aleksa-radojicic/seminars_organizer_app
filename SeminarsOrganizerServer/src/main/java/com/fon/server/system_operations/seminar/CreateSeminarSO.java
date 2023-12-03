@@ -6,6 +6,7 @@ package com.fon.server.system_operations.seminar;
 
 import com.fon.common.domain.Seminar;
 import com.fon.common.domain.SeminarTopic;
+import com.fon.server.constants.ServerConstants;
 import com.fon.server.system_operations.AbstractSO;
 
 /**
@@ -31,7 +32,7 @@ public class CreateSeminarSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof Seminar)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
