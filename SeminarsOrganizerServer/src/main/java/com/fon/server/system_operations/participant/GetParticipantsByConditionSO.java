@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import com.fon.server.system_operations.AbstractSO;
 import com.fon.common.utils.Utility;
+import com.fon.server.constants.ServerConstants;
 
 /**
  * System operation used for retrieving participants from the database that meet
@@ -40,7 +41,7 @@ public class GetParticipantsByConditionSO extends AbstractSO {
     @Override
     protected void preconditions(Object arg) throws Exception {
         if (arg == null || !(arg instanceof String)) {
-            throw new Exception("Послати објекат није одговарајућег типа");
+            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
     }
 
@@ -74,7 +75,7 @@ public class GetParticipantsByConditionSO extends AbstractSO {
         }
 
         List<Participant> participants = REPOSITORY.getByCondition(new Participant(), whereQuerySection);
-        if (participants != null) {
+        if (!participants.isEmpty()) {
             list = participants;
         }
     }

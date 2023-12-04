@@ -92,7 +92,7 @@ public class SeminarTopicTest extends GenericEntityTest {
 
     @Test
     void test_setAttributeValues() {
-        String expectedValue = String.format("seminarID = %d, seminarTopicID = %d, name = '%s', presenter = '%s'", seminarID, ID, name, presenter);
+        String expectedValue = String.format("name = '%s', presenter = '%s'", name, presenter);
         assertEquals(expectedValue, seminarTopic.setAttributeValues());
     }
 
@@ -122,7 +122,7 @@ public class SeminarTopicTest extends GenericEntityTest {
 
     @Test
     void test_getQueryCondition() {
-        super.test_getQueryCondition(String.format("seminarTopicID = %d ", ID));
+        super.test_getQueryCondition(String.format("seminarID = %d AND seminarTopicID = %d ", seminar.getSeminarID(), ID));
     }
 
     @Test
