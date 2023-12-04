@@ -55,8 +55,8 @@ public class EducationalInstitution implements GenericEntity {
      */
     public EducationalInstitution(int educationalInstitutionID, String name, String address) {
         this.educationalInstitutionID = educationalInstitutionID;
-        this.name = name;
-        this.address = address;
+        this.name = validateName(name);
+        this.address = validateAddress(address);
     }
 
     /**
@@ -130,7 +130,30 @@ public class EducationalInstitution implements GenericEntity {
      * @param name Name as string.
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = validateName(name);
+    }
+
+    /**
+     * Validation for name.
+     *
+     * @param name Name as {@code String}.
+     * @return Name as {@code String}.
+     * @throws NullPointerException When {@code name} is null.
+     * @throws IllegalArgumentException When {@code name} is empty or greater
+     * than 30.
+     */
+    private String validateName(String name) throws NullPointerException, IllegalArgumentException {
+        if (name == null) {
+            throw new NullPointerException("Name must not be null!");
+        }
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be empty!");
+        }
+        int maxLength = 30;
+        if (name.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Name must not be greater than %d!", maxLength));
+        }
+        return name;
     }
 
     /**
@@ -148,7 +171,30 @@ public class EducationalInstitution implements GenericEntity {
      * @param address Address as string.
      */
     public void setAddress(String address) {
-        this.address = address;
+        this.address = validateAddress(address);
+    }
+
+    /**
+     * Validation for address.
+     *
+     * @param address Address as {@code String}.
+     * @return Address as {@code String}.
+     * @throws NullPointerException When {@code name} is null.
+     * @throws IllegalArgumentException When {@code address} is empty or greater
+     * than 60.
+     */
+    private String validateAddress(String address) throws IllegalArgumentException, NullPointerException {
+        if (address == null) {
+            throw new NullPointerException("Address must not be null!");
+        }
+        if (address.isEmpty()) {
+            throw new IllegalArgumentException("Address must not be empty!");
+        }
+        int maxLength = 60;
+        if (address.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Address must not be greater than %d!", maxLength));
+        }
+        return address;
     }
 
     /**

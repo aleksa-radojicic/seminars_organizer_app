@@ -74,10 +74,10 @@ public class Admin implements GenericEntity {
      */
     public Admin(int adminID, String username, String password, String name, String surname) {
         this.adminID = adminID;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
+        this.username = validateUsername(username);
+        this.password = validatePassword(password);
+        this.name = validateName(name);
+        this.surname = validateSurname(surname);
     }
 
     /**
@@ -110,10 +110,33 @@ public class Admin implements GenericEntity {
     /**
      * Setter for username.
      *
-     * @param username Username as integer.
+     * @param username Username as string.
      */
     public void setUsername(String username) {
-        this.username = username;
+        this.username = validateUsername(username);
+    }
+
+    /**
+     * Validation for username.
+     *
+     * @param username Username as {@code String}.
+     * @return Username as {@code String}.
+     * @throws NullPointerException When {@code username} is null.
+     * @throws IllegalArgumentException When {@code username} is empty or
+     * greater than 30.
+     */
+    private String validateUsername(String username) throws IllegalArgumentException, NullPointerException {
+        if (username == null) {
+            throw new NullPointerException("Username must not be null!");
+        }
+        if (username.isEmpty()) {
+            throw new IllegalArgumentException("Username must not be empty!");
+        }
+        int maxLength = 30;
+        if (username.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Username must not be greater than %d!", maxLength));
+        }
+        return username;
     }
 
     /**
@@ -128,10 +151,33 @@ public class Admin implements GenericEntity {
     /**
      * Setter for password.
      *
-     * @param password Password as integer.
+     * @param password Password as string.
      */
     public void setPassword(String password) {
-        this.password = password;
+        this.password = validatePassword(password);
+    }
+
+    /**
+     * Validation for password.
+     *
+     * @param password Password as {@code String}.
+     * @return Password as {@code String}.
+     * @throws NullPointerException When {@code password} is null.
+     * @throws IllegalArgumentException When {@code password} is empty or
+     * greater than 30.
+     */
+    private String validatePassword(String password) throws IllegalArgumentException, NullPointerException {
+        if (password == null) {
+            throw new NullPointerException("Password must not be null!");
+        }
+        if (password.isEmpty()) {
+            throw new IllegalArgumentException("Password must not be empty!");
+        }
+        int maxLength = 30;
+        if (password.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Password must not be greater than %d!", maxLength));
+        }
+        return password;
     }
 
     /**
@@ -146,10 +192,33 @@ public class Admin implements GenericEntity {
     /**
      * Setter for name.
      *
-     * @param name Name as integer.
+     * @param name Name as string.
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = validateName(name);
+    }
+
+    /**
+     * Validation for name.
+     *
+     * @param name Name as {@code String}.
+     * @return Name as {@code String}.
+     * @throws NullPointerException When {@code name} is null.
+     * @throws IllegalArgumentException When {@code name} is empty or greater
+     * than 30.
+     */
+    private String validateName(String name) throws NullPointerException, IllegalArgumentException {
+        if (name == null) {
+            throw new NullPointerException("Name must not be null!");
+        }
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be empty!");
+        }
+        int maxLength = 30;
+        if (name.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Name must not be greater than %d!", maxLength));
+        }
+        return name;
     }
 
     /**
@@ -164,10 +233,33 @@ public class Admin implements GenericEntity {
     /**
      * Setter for surname.
      *
-     * @param surname Surname as integer.
+     * @param surname Surname as string.
      */
     public void setSurname(String surname) {
-        this.surname = surname;
+        this.surname = validateSurname(surname);
+    }
+
+    /**
+     * Validation for surname.
+     *
+     * @param surname Surname as string.
+     * @return Surname as integer.
+     * @throws NullPointerException When {@code surname} is null.
+     * @throws IllegalArgumentException When {@code surname} is empty or greater
+     * than 30.
+     */
+    private String validateSurname(String surname) throws NullPointerException, IllegalArgumentException {
+        if (surname == null) {
+            throw new NullPointerException("Surname must not be null!");
+        }
+        if (surname.isEmpty()) {
+            throw new IllegalArgumentException("Surname must not be empty!");
+        }
+        int maxLength = 30;
+        if (surname.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Surname must not be greater than %d!", maxLength));
+        }
+        return surname;
     }
 
     /**

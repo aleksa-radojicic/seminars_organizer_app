@@ -47,8 +47,8 @@ public class SaveSeminarScheduleSOTest {
         sssSO = new SaveSeminarScheduleSO();
 
         final int seminarScheduleID = 1001;
-        final Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.01.1980 | 13:01");
-        final Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.01.1980 | 14:01");
+        final Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 14:00");
+        final Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.02.2024 | 16:15");
         final int createdByAdminID = 1;
         final Admin createdByAdmin = new Admin(createdByAdminID);
 
@@ -126,8 +126,8 @@ public class SaveSeminarScheduleSOTest {
             assertDoesNotThrow(() -> cssSO.execute(seminarSchedule));
 
             //2) Update created seminar schedule
-            final Date datetimeBeginsOther = Utility.DATETIME_FORMAT.parse("01.01.1981 | 13:01");
-            final Date datetimeEndsOther = Utility.DATETIME_FORMAT.parse("01.01.1981 | 14:01");
+            final Date datetimeBeginsOther = Utility.DATETIME_FORMAT.parse("01.02.2024 | 15:00");
+            final Date datetimeEndsOther = Utility.DATETIME_FORMAT.parse("01.02.2024 | 15:30");
             seminarSchedule.setDatetimeBegins(datetimeBeginsOther);
             seminarSchedule.setDatetimeEnds(datetimeEndsOther);
             seminarSchedule.setState(State.CHANGED);

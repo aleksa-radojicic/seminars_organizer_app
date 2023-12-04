@@ -4,6 +4,7 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.Utility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,9 +129,45 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setName_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> educationalInstitution.setName(null));
+    }
+
+    @Test
+    void test_setName_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> educationalInstitution.setName(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setName_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> educationalInstitution.setName(Utility.STRING_31_LENGTH));
+    }
+
+    @Test
     void test_setAddress() {
         educationalInstitution.setAddress(address);
         assertEquals(educationalInstitution.getAddress(), address);
+    }
+
+    @Test
+    void test_setAddress_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> educationalInstitution.setAddress(null));
+    }
+
+    @Test
+    void test_setAddress_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> educationalInstitution.setAddress(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setAddress_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> educationalInstitution.setAddress(Utility.STRING_61_LENGTH));
     }
 
     @Test

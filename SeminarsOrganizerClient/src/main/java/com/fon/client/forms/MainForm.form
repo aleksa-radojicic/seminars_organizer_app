@@ -78,6 +78,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="&#x413;&#x43b;&#x430;&#x432;&#x43d;&#x430; &#x43a;&#x43b;&#x438;&#x458;&#x435;&#x43d;&#x442;&#x441;&#x43a;&#x430; &#x444;&#x43e;&#x440;&#x43c;&#x430;"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar"/>

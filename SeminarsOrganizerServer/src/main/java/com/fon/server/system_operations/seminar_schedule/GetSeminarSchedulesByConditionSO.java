@@ -152,7 +152,7 @@ public class GetSeminarSchedulesByConditionSO extends AbstractSO {
      * @return WHERE query section regarding seminar name condition.
      */
     private String getSeminarNameQueryCondition(String seminarName) {
-        return "s.name LIKE " + Utility.encloseWithSingleQuotes("%" + seminarName + "%");
+        return "s.name LIKE '%" + seminarName + "%'";
     }
 
     /**
@@ -166,6 +166,6 @@ public class GetSeminarSchedulesByConditionSO extends AbstractSO {
     private String getDatetimeQueryCondition(Date date) {
         String dateString = new java.sql.Date(date.getTime()).toString();
 
-        return Utility.encloseWithSingleQuotes(dateString) + " BETWEEN DATE(datetimeBegins) and DATE(datetimeEnds)";
+        return String.format("'%s' BETWEEN DATE(datetimeBegins) and DATE(datetimeEnds)", dateString);
     }
 }

@@ -101,11 +101,11 @@ public class SeminarSchedule implements GenericEntity {
     public SeminarSchedule(int seminarScheduleID, Date datetimeBegins, Date datetimeEnds, Admin createdByAdmin,
             Seminar seminar, EducationalInstitution educationalInstitution, List<SeminarEnrollment> seminarEnrollments) {
         this.seminarScheduleID = seminarScheduleID;
-        this.datetimeBegins = datetimeBegins;
-        this.datetimeEnds = datetimeEnds;
+        this.seminar = validateSeminar(seminar);
+        this.datetimeBegins = validateDatetimeBegins(datetimeBegins);
+        this.datetimeEnds = validateDatetimeEnds(datetimeEnds);
         this.createdByAdmin = createdByAdmin;
-        this.seminar = seminar;
-        this.educationalInstitution = educationalInstitution;
+        this.educationalInstitution = validateEducationalInstitution(educationalInstitution);
         this.seminarEnrollments = seminarEnrollments;
     }
 
@@ -293,7 +293,22 @@ public class SeminarSchedule implements GenericEntity {
      * @param state State as {@code State}
      */
     public void setState(State state) {
-        this.state = state;
+        this.state = validateState(state);
+    }
+
+    /**
+     * Validation for state.
+     *
+     * @param state State as {@code State}.
+     * @return State as {@code State}.
+     * @throws NullPointerException When {@code state} is null.
+     *
+     */
+    private State validateState(State state) {
+        if (state == null) {
+            throw new NullPointerException("State must not be null!");
+        }
+        return state;
     }
 
     @Override
@@ -335,7 +350,28 @@ public class SeminarSchedule implements GenericEntity {
      * {@code Date}.
      */
     public void setDatetimeBegins(Date datetimeBegins) {
-        this.datetimeBegins = datetimeBegins;
+        this.datetimeBegins = validateDatetimeBegins(datetimeBegins);
+    }
+
+    /**
+     * Validation for datetimeBegins.
+     *
+     * @param datetimeBegins SeminarSchedule's beginning date and time as
+     * {@code Date}.
+     * @return SeminarSchedule's beginning date and time as {@code Date}.
+     * @throws NullPointerException When {@code datetimeBegins} is null.
+     * @throws IllegalArgumentException When {@code datetimeBegins} is in the
+     * future.
+     */
+    private Date validateDatetimeBegins(Date datetimeBegins) throws IllegalArgumentException {
+        if (datetimeBegins == null) {
+            throw new NullPointerException("Beginning date and time must not be null!");
+        }
+        Date todaysDate = new Date();
+        if (datetimeBegins.before(todaysDate)) {
+            throw new IllegalArgumentException("Beginning date and time must not be in the past!");
+        }
+        return datetimeBegins;
     }
 
     /**
@@ -353,7 +389,30 @@ public class SeminarSchedule implements GenericEntity {
      * @param datetimeEnds SeminarSchedule's end date and time as {@code Date}.
      */
     public void setDatetimeEnds(Date datetimeEnds) {
-        this.datetimeEnds = datetimeEnds;
+        this.datetimeEnds = validateDatetimeEnds(datetimeEnds);
+    }
+
+    /**
+     * Validation for datetimeEnds.
+     *
+     * @param datetimeEnds SeminarSchedule's end date and time as {@code Date}.
+     * @return SeminarSchedule's end date and time as {@code Date}.
+     * @throws NullPointerException When {@code datetimeEnds} is null.
+     * @throws IllegalArgumentException When {@code datetimeEnds} is in the
+     * future or before beginning date.
+     */
+    private Date validateDatetimeEnds(Date datetimeEnds) throws IllegalArgumentException {
+        if (datetimeEnds == null) {
+            throw new NullPointerException("End date and time must not be null!");
+        }
+        Date todaysDate = new Date();
+        if (datetimeEnds.before(todaysDate)) {
+            throw new IllegalArgumentException("End date and time must not be in the past!");
+        }
+        if (datetimeEnds.before(datetimeBegins)) {
+            throw new IllegalArgumentException("End date and time must not be before beginning date and time!");
+        }
+        return datetimeEnds;
     }
 
     /**
@@ -372,7 +431,23 @@ public class SeminarSchedule implements GenericEntity {
      * {@code Admin}.
      */
     public void setCreatedByAdmin(Admin createdByAdmin) {
-        this.createdByAdmin = createdByAdmin;
+        this.createdByAdmin = validateCreatedByAdmin(createdByAdmin);
+    }
+
+    /**
+     * Validation for createdByAdmin.
+     *
+     * @param createdByAdmin Admin who created the SeminarSchedule as
+     * {@code Admin}.
+     * @return Admin who created the SeminarSchedule as {@code Admin}.
+     * @throws NullPointerException When {@code createdByAdmin} is null.
+     *
+     */
+    private Admin validateCreatedByAdmin(Admin createdByAdmin) {
+        if (createdByAdmin == null) {
+            throw new NullPointerException("Admin who created the seminar schedule must not be null!");
+        }
+        return createdByAdmin;
     }
 
     /**
@@ -390,7 +465,22 @@ public class SeminarSchedule implements GenericEntity {
      * @param seminar Seminar which is scheduled as {@code Seminar}.
      */
     public void setSeminar(Seminar seminar) {
-        this.seminar = seminar;
+        this.seminar = validateSeminar(seminar);
+    }
+
+    /**
+     * Validation for seminar.
+     *
+     * @param seminar Seminar which is scheduled as {@code Seminar}.
+     * @return Seminar which is scheduled as {@code Seminar}.
+     * @throws NullPointerException When {@code seminar} is null.
+     *
+     */
+    private Seminar validateSeminar(Seminar seminar) {
+        if (seminar == null) {
+            throw new NullPointerException("Seminar must not be null!");
+        }
+        return seminar;
     }
 
     /**
@@ -408,9 +498,27 @@ public class SeminarSchedule implements GenericEntity {
      *
      * @param educationalInstitution Educational institution hosting the
      * SeminarSchedule as {@code EducationalInstitution}.
+     *
      */
     public void setEducationalInstitution(EducationalInstitution educationalInstitution) {
-        this.educationalInstitution = educationalInstitution;
+        this.educationalInstitution = validateEducationalInstitution(educationalInstitution);
+    }
+
+    /**
+     * Validation for educationalInstitution.
+     *
+     * @param educationalInstitution Educational institution hosting the
+     * SeminarSchedule as {@code EducationalInstitution}.
+     * @return Educational institution hosting the SeminarSchedule as
+     * {@code EducationalInstitution}.
+     * @throws NullPointerException When {@code educationalInstitution} is null.
+     *
+     */
+    private EducationalInstitution validateEducationalInstitution(EducationalInstitution educationalInstitution) {
+        if (educationalInstitution == null) {
+            throw new NullPointerException("Educational institution must not be null!");
+        }
+        return educationalInstitution;
     }
 
     /**
@@ -431,6 +539,23 @@ public class SeminarSchedule implements GenericEntity {
      * SeminarSchedule contains as {@code List<SeminarEnrollment>}.
      */
     public void setSeminarEnrollments(List<SeminarEnrollment> seminarEnrollments) {
-        this.seminarEnrollments = seminarEnrollments;
+        this.seminarEnrollments = validateSeminarEnrollments(seminarEnrollments);
+    }
+
+    /**
+     * Validation for seminarEnrollments.
+     *
+     * @param seminarEnrollments List of all SeminarEnrollments that the
+     * SeminarSchedule contains as {@code List<SeminarEnrollment>}.
+     * @return List of all SeminarEnrollments that the SeminarSchedule contains
+     * as {@code List<SeminarEnrollment>}.
+     * @throws NullPointerException When {@code seminarEnrollments} is null.
+     *
+     */
+    private List<SeminarEnrollment> validateSeminarEnrollments(List<SeminarEnrollment> seminarEnrollments) {
+        if (seminarEnrollments == null) {
+            throw new NullPointerException("Seminar enrollments must not be null!");
+        }
+        return seminarEnrollments;
     }
 }

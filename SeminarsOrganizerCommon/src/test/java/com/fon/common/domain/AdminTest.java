@@ -4,6 +4,7 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.Utility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,7 +73,7 @@ public class AdminTest extends GenericEntityTest {
     void test_getID() {
         super.test_getID(admin.getAdminID());
     }
-    
+
     @Test
     void test_setID() {
         super.test_setID(admin.getAdminID());
@@ -135,9 +137,45 @@ public class AdminTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setUsername_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> admin.setUsername(null));
+    }
+
+    @Test
+    void test_setUsername_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setUsername(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setUsername_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setUsername(Utility.STRING_31_LENGTH));
+    }
+
+    @Test
     void test_setPassword() {
         admin.setPassword(password);
         assertEquals(admin.getPassword(), password);
+    }
+
+    @Test
+    void test_setPassword_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> admin.setPassword(null));
+    }
+
+    @Test
+    void test_setPassword_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setPassword(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setPassword_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setPassword(Utility.STRING_31_LENGTH));
     }
 
     @Test
@@ -147,9 +185,45 @@ public class AdminTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setName_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> admin.setName(null));
+    }
+
+    @Test
+    void test_setName_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setName(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setName_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setName(Utility.STRING_31_LENGTH));
+    }
+
+    @Test
     void test_setSurname() {
         admin.setSurname(surname);
         assertEquals(admin.getSurname(), surname);
+    }
+
+    @Test
+    void test_setSurname_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> admin.setSurname(null));
+    }
+
+    @Test
+    void test_setSurname_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setSurname(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setSurname_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> admin.setSurname(Utility.STRING_31_LENGTH));
     }
 
     @Test

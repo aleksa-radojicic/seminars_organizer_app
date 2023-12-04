@@ -4,7 +4,6 @@
  */
 package com.fon.server.forms;
 
-import com.fon.common.exceptions.ClientValidationException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -143,7 +142,7 @@ public class DbSettingsForm extends javax.swing.JDialog {
 
             properties.store(new FileOutputStream("config/dbconfig.properties"), "url config updated");
             this.dispose();
-        } catch (ClientValidationException ex) {
+        } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(this, "Не постоји унети фајл", "Грешка", JOptionPane.ERROR_MESSAGE);
@@ -201,16 +200,16 @@ public class DbSettingsForm extends javax.swing.JDialog {
         }
     }
 
-    private String validateUrl(String url) throws ClientValidationException {
+    private String validateUrl(String url) throws IllegalArgumentException {
         if (url.isEmpty()) {
-            throw new ClientValidationException("Url не сме бити празан");
+            throw new IllegalArgumentException("Url не сме бити празан");
         }
         return url;
     }
 
-    private String validateUsername(String username) throws ClientValidationException {
+    private String validateUsername(String username) throws IllegalArgumentException {
         if (username.isEmpty()) {
-            throw new ClientValidationException("Корисничко име не сме бити празно");
+            throw new IllegalArgumentException("Корисничко име не сме бити празно");
         }
         return username;
     }

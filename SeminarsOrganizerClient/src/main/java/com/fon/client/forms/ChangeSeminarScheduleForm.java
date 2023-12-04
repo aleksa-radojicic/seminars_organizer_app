@@ -2,7 +2,6 @@ package com.fon.client.forms;
 
 import com.fon.client.controller.ClientController;
 import com.fon.common.domain.*;
-import com.fon.common.exceptions.ClientValidationException;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -277,7 +276,7 @@ public class ChangeSeminarScheduleForm extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(rootPane, "Систем је направио термин семинара", "Успешно прављење термина", JOptionPane.INFORMATION_MESSAGE);
 
             this.dispose();
-        } catch (ClientValidationException ex) {
+        } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(ChangeSeminarScheduleForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -304,7 +303,10 @@ public class ChangeSeminarScheduleForm extends javax.swing.JDialog {
         try {
             SeminarSchedule seminarSchedule = getSeminarScheduleFromForm();
             seminarSchedule.setSeminarScheduleID(seminarScheduleOriginal.getSeminarScheduleID());
-            seminarSchedule.setCreatedByAdmin(seminarScheduleOriginal.getCreatedByAdmin());
+            //Client cannot see the admin who created the seminar schedule.
+            //For that fact SELECT query doesn't return info about the admin
+            //and it's safe to pass Admin with id 0
+            seminarSchedule.setCreatedByAdmin(new Admin());
 
             if (seminarSchedule.equalsAll(seminarScheduleOriginal)) {
                 JOptionPane.showMessageDialog(rootPane, "Ништа нисте изменили", "Упозорење", JOptionPane.WARNING_MESSAGE);
@@ -320,7 +322,7 @@ public class ChangeSeminarScheduleForm extends javax.swing.JDialog {
             ClientController.getInstance().saveSeminarSchedule(seminarSchedule);
             JOptionPane.showMessageDialog(rootPane, "Систем је запамтио термин семинара", "Успешно чување термина семинара", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (ClientValidationException ex) {
+        } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(ChangeSeminarScheduleForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -397,7 +399,6 @@ public class ChangeSeminarScheduleForm extends javax.swing.JDialog {
         loadParticipants();
         prepareFields();
         prepareTable();
-
     }
 
     private void prepareFields() {
@@ -457,21 +458,12 @@ public class ChangeSeminarScheduleForm extends javax.swing.JDialog {
         }
     }
 
-    private List<SeminarEnrollment> validateSeminarEnrollments(List<SeminarEnrollment> list) throws ClientValidationException {
-        for (SeminarEnrollment se : list) {
-            if (se.getParticipant() == null) {
-                throw new ClientValidationException("Учесник у неком реду табеле не постоји");
-            }
-        }
-        return list;
-    }
-
-    private SeminarSchedule getSeminarScheduleFromForm() throws ClientValidationException {
+    private SeminarSchedule getSeminarScheduleFromForm() {
         Seminar seminar = (Seminar) cbSeminar.getSelectedItem();
         Date datetimeBegins = (Date) txtDatetimeBegins.getValue();
         Date datetimeEnds = (Date) txtDatetimeEnds.getValue();
         EducationalInstitution educationalInstitution = (EducationalInstitution) cbEducationalInstitution.getSelectedItem();
-        List<SeminarEnrollment> seminarEnrollments = validateSeminarEnrollments(tableModel.getList());
+        List<SeminarEnrollment> seminarEnrollments = tableModel.getList();
         SeminarSchedule seminarSchedule = new SeminarSchedule(0, datetimeBegins, datetimeEnds, loggedAdmin, seminar, educationalInstitution, seminarEnrollments);
         addSeminarScheduleToSeminarEnrollments(seminarSchedule, seminarEnrollments);
 

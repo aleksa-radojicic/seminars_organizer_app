@@ -146,7 +146,7 @@ public class ViewSeminarsForm extends javax.swing.JDialog {
             int selectedRow = tbl.getSelectedRow();
 
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(rootPane, "Морате изабрати семинар у табели да бисте видељи подробности", "Грешка при одабиру термина семинара за подробности", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(rootPane, "Морате изабрати семинар у табели да бисте видели подробности", "Грешка при одабиру термина семинара за подробности", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 

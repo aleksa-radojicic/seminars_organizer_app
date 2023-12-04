@@ -84,8 +84,8 @@ public class Seminar implements GenericEntity {
     public Seminar(int seminarID, String name, String description,
             Admin createdByAdmin, List<SeminarTopic> seminarTopics) {
         this.seminarID = seminarID;
-        this.name = name;
-        this.description = description;
+        this.name = validateName(name);
+        this.description = validateDescription(description);
         this.createdByAdmin = createdByAdmin;
         this.seminarTopics = seminarTopics;
     }
@@ -100,32 +100,32 @@ public class Seminar implements GenericEntity {
      */
     public Seminar(int seminarID, String name, String description) {
         this.seminarID = seminarID;
-        this.name = name;
-        this.description = description;
-        createdByAdmin = new Admin();
+        this.name = validateName(name);
+        this.description = validateDescription(description);
+        this.createdByAdmin = new Admin();
     }
-
+    
     @Override
     public String getAttributeNames() {
         return "seminarID, name, description, createdByAdminID";
     }
-
+    
     @Override
     public String getAttributeValues() throws Exception {
         return String.format("%d, '%s', '%s', %d", seminarID, name, description, createdByAdmin.getAdminID());
     }
-
+    
     @Override
     public String setAttributeValues() {
         return String.format("name ='%s', description = '%s'", name, description);
     }
-
+    
     @Override
     public GenericEntity getEntityFromResultSet(ResultSet rs) throws SQLException {
         Seminar seminar = new Seminar(rs.getInt("seminarID"), rs.getString("name"), rs.getString("description"), null, null);
         return seminar;
     }
-
+    
     @Override
     public State getState() {
         return state;
@@ -238,7 +238,22 @@ public class Seminar implements GenericEntity {
      * @param createdByAdmin Admin who created the Seminar as {@code Admin}.
      */
     public void setCreatedByAdmin(Admin createdByAdmin) {
-        this.createdByAdmin = createdByAdmin;
+        this.createdByAdmin = validateCreatedByAdmin(createdByAdmin);
+    }
+
+    /**
+     * Validation for createdByAdmin.
+     *
+     * @param createdByAdmin Admin who created the Seminar as {@code Admin}.
+     * @return Admin who created the Seminar as {@code Admin}.
+     * @throws NullPointerException When {@code createdByAdmin} is null.
+     *
+     */
+    private Admin validateCreatedByAdmin(Admin createdByAdmin) {
+        if (createdByAdmin == null) {
+            throw new NullPointerException("Admin who created the seminar must not be null!");
+        }
+        return createdByAdmin;
     }
 
     /**
@@ -274,7 +289,30 @@ public class Seminar implements GenericEntity {
      * @param name Name as {@code String}.
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = validateName(name);
+    }
+
+    /**
+     * Validation for name.
+     *
+     * @param name Name as {@code String}.
+     * @return Name as {@code String}.
+     * @throws NullPointerException When {@code name} is null.
+     * @throws IllegalArgumentException When {@code name} is empty or greater
+     * than 60.
+     */
+    private String validateName(String name) throws NullPointerException, IllegalArgumentException {
+        if (name == null) {
+            throw new NullPointerException("Name must not be null!");
+        }
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be empty!");
+        }
+        int maxLength = 60;
+        if (name.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Name must not be greater than %d!", maxLength));
+        }
+        return name;
     }
 
     /**
@@ -292,7 +330,27 @@ public class Seminar implements GenericEntity {
      * @param description Description as {@code String}.
      */
     public void setDescription(String description) {
-        this.description = description;
+        this.description = validateDescription(description);
+    }
+
+    /**
+     * Validation for description.
+     *
+     * @param description Description as {@code String}.
+     * @return Description as {@code String}.
+     * @throws NullPointerException When {@code description} is null.
+     * @throws IllegalArgumentException When {@code description} is greater than
+     * 200.
+     */
+    private String validateDescription(String description) throws NullPointerException, IllegalArgumentException {
+        if (description == null) {
+            throw new NullPointerException("Description must not be null!");
+        }
+        int maxLength = 200;
+        if (description.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Description must not be greater than %d!", maxLength));
+        }
+        return description;
     }
 
     /**
@@ -310,7 +368,24 @@ public class Seminar implements GenericEntity {
      * @param seminarTopics Seminar topics as {@code List<SeminarTopic>}.
      */
     public void setSeminarTopics(List<SeminarTopic> seminarTopics) {
-        this.seminarTopics = seminarTopics;
+        this.seminarTopics = validateSeminarTopics(seminarTopics);
+    }
+
+    /**
+     * Validation for seminarTopics.
+     *
+     * @param seminarTopics Seminar topics as {@code List<SeminarTopic>}.
+     * @return Seminar topics as {@code List<SeminarTopic>}.
+     * @throws NullPointerException When {@code seminarTopics} is null.
+     *
+     */
+    private List<SeminarTopic> validateSeminarTopics(List<SeminarTopic> seminarTopics) {
+        if (seminarTopics == null) {
+            throw new NullPointerException("Seminar topics must not be null!");
+        }
+        //Ensure no topics are present with null data
+        seminarTopics.forEach(x -> x.validateNull());
+        return seminarTopics;
     }
 
     /**
@@ -333,6 +408,21 @@ public class Seminar implements GenericEntity {
      * @param state State as {@code State}.
      */
     public void setState(State state) {
-        this.state = state;
+        this.state = validateState(state);
+    }
+
+    /**
+     * Validation for state.
+     *
+     * @param state State as {@code State}.
+     * @return State as {@code State}.
+     * @throws NullPointerException When {@code state} is null.
+     *
+     */
+    private State validateState(State state) {
+        if (state == null) {
+            throw new NullPointerException("State must not be null!");
+        }
+        return state;
     }
 }

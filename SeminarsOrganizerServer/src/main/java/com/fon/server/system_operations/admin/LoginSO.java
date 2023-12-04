@@ -6,7 +6,7 @@ package com.fon.server.system_operations.admin;
 
 import java.util.List;
 import com.fon.common.domain.Admin;
-import com.fon.common.exceptions.ServerValidationException;
+import com.fon.common.exceptions.LoginException;
 import com.fon.server.constants.ServerConstants;
 import com.fon.server.system_operations.AbstractSO;
 
@@ -62,17 +62,6 @@ public class LoginSO extends AbstractSO {
         if (arg == null || !(arg instanceof Admin)) {
             throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
         }
-        Admin admin = (Admin) arg;
-
-        String username = admin.getUsername();
-        if (username == null) {
-            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
-        }
-        
-        String password = admin.getPassword();
-        if (password == null) {
-            throw new Exception(ServerConstants.INCORRECT_TYPE_ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -81,13 +70,13 @@ public class LoginSO extends AbstractSO {
      *
      * @param arg Instance of {@code Admin} class with filled username and
      * password.
-     * @throws ServerValidationException When admin entered wrong username and /
+     * @throws LoginException When admin entered wrong username and /
      * or password.
      * @throws Exception When an error happened while retrieving an admin with
      * all data.
      */
     @Override
-    protected void executeOperation(Object arg) throws ServerValidationException, Exception {
+    protected void executeOperation(Object arg) throws LoginException, Exception {
         Admin admin = (Admin) arg;
 
         String whereQuerySection = "WHERE username = '" + admin.getUsername() + "' and password = '" + admin.getPassword() + "'";
@@ -95,7 +84,7 @@ public class LoginSO extends AbstractSO {
         List<Admin> admins = (List<Admin>) REPOSITORY.getByCondition(new Admin(), whereQuerySection);
 
         if (admins.isEmpty()) {
-            throw new ServerValidationException("Нетачно корисничко име или лозинка");
+            throw new LoginException("Нетачно корисничко име или лозинка");
         }
         loggedAdmin = admins.get(0);
     }

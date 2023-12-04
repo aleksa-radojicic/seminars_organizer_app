@@ -45,8 +45,8 @@ public class CreateSeminarScheduleSOTest {
         cssSO = new CreateSeminarScheduleSO();
 
         final int seminarScheduleID = 1000;
-        final Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.01.1980 | 13:01");
-        final Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.01.1980 | 14:01");
+        final Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 14:00");
+        final Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.02.2024 | 16:15");
         final int createdByAdminID = 1;
         final Admin createdByAdmin = new Admin(createdByAdminID);
 

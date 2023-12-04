@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,6 +19,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,10 +41,10 @@ public class SeminarScheduleTest extends GenericEntityTest {
 
     private static final int ID = 1;
     private static final String IDString = "1";
-    private static final Date datetimeBegins = new Date(1980, 1, 1, 1, 1);
-    private static final String datetimeBeginsString = "Sun Feb 01 01:01:00 CET 3880";
-    private static final Date datetimeEnds = new Date(1980, 1, 1, 2, 1);
-    private static final String datetimeEndsString = "Sun Feb 01 02:01:00 CET 3880";
+    private static Date datetimeBegins;
+    private static final String datetimeBeginsString = "01.02.2024 | 14:00";
+    private static Date datetimeEnds;
+    private static final String datetimeEndsString = "01.02.2024 | 16:15";
     private static final int createdByAdminID = 1;
     private static final String createdByAdminIDString = "1";
     private static final Admin createdByAdmin = new Admin(createdByAdminID);
@@ -60,10 +60,10 @@ public class SeminarScheduleTest extends GenericEntityTest {
 
     private static int IDOther = 2;
     private static final String IDStringOther = "2";
-    private static final Date datetimeBeginsOther = new Date(1990, 1, 1, 1, 1);
-    private static final String datetimeBeginsStringOther = "Sat Feb 01 01:01:00 CET 3890";
-    private static final Date datetimeEndsOther = new Date(1990, 1, 1, 2, 1);
-    private static final String datetimeEndsStringOther = "Sat Feb 01 02:01:00 CET 3890";
+    private static Date datetimeBeginsOther;
+    private static final String datetimeBeginsStringOther = "01.02.2024 | 15:00";
+    private static Date datetimeEndsOther;
+    private static final String datetimeEndsStringOther = "01.02.2024 | 15:30";
     private static final int createdByAdminIDOther = 2;
     private static final String createdByAdminIDStringOther = "2";
     private static final int seminarIDOther = 2;
@@ -71,7 +71,13 @@ public class SeminarScheduleTest extends GenericEntityTest {
     private static final int eiIDOther = 2;
     private static final String eiIDStringOther = "2";
 
-    private static void seminarScheduleInitializer() {
+    private static void seminarScheduleInitializer() throws ParseException {
+        datetimeBegins = Utility.DATETIME_FORMAT.parse(datetimeBeginsString);
+        datetimeEnds = Utility.DATETIME_FORMAT.parse(datetimeEndsString);
+
+        datetimeBeginsOther = Utility.DATETIME_FORMAT.parse(datetimeBeginsStringOther);
+        datetimeEndsOther = Utility.DATETIME_FORMAT.parse(datetimeEndsStringOther);
+
         SeminarEnrollment se11 = new SeminarEnrollment(seminarSchedule, new Participant(11), "notes11");
         SeminarEnrollment se12 = new SeminarEnrollment(seminarSchedule, new Participant(12), "notes12");
         SeminarEnrollment se13 = new SeminarEnrollment(seminarSchedule, new Participant(13), "notes13");
@@ -81,7 +87,7 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
         seminarScheduleInitializer();
         genericEntity = seminarSchedule;
     }
@@ -194,9 +200,40 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setDatetimeBegins_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setDatetimeBegins(null));
+    }
+
+    @Test
+    void test_setDatetimeBegins_pastDate() throws ParseException {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarSchedule.setDatetimeBegins(Utility.GET_DATE_PAST()));
+    }
+
+    @Test
     void test_setDatetimeEnds() {
         seminarSchedule.setDatetimeEnds(datetimeEnds);
         assertEquals(seminarSchedule.getDatetimeEnds(), datetimeEnds);
+    }
+
+    @Test
+    void test_setDatetimeEnds_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setDatetimeEnds(null));
+    }
+
+    @Test
+    void test_setDatetimeEnds_pastDate() throws ParseException {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarSchedule.setDatetimeEnds(Utility.GET_DATE_PAST()));
+    }
+
+    @Test
+    void test_setDatetimeEnds_beforeDatetimeBegins() throws ParseException {
+        Date datetimeEndsBeforeDatetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 11:30");
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarSchedule.setDatetimeEnds(datetimeEndsBeforeDatetimeBegins));
     }
 
     @Test
@@ -206,9 +243,21 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setCreatedByAdmin_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setCreatedByAdmin(null));
+    }
+
+    @Test
     void test_setSeminar() {
         seminarSchedule.setSeminar(seminar);
         assertEquals(seminarSchedule.getSeminar(), seminar);
+    }
+
+    @Test
+    void test_setSeminar_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setSeminar(null));
     }
 
     @Test
@@ -218,15 +267,33 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setEducationalInstitution_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setEducationalInstitution(null));
+    }
+
+    @Test
     void test_setSeminarEnrollments() {
         seminarSchedule.setSeminarEnrollments(seminarEnrollments);
         assertEquals(seminarSchedule.getSeminarEnrollments(), seminarEnrollments);
     }
 
     @Test
+    void test_setSeminarEnrollments_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarSchedule.setSeminarEnrollments(null));
+    }
+
+    @Test
     void test_setState() {
         seminarSchedule.setState(State.CREATED);
         assertEquals(State.CREATED, seminarSchedule.getState());
+    }
+
+    @Test
+    void test_setState_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setState(null));
     }
 
     @Test
@@ -265,13 +332,14 @@ public class SeminarScheduleTest extends GenericEntityTest {
             boolean result) {
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-
             Admin a2 = new Admin(seminarID2);
             Seminar s2 = new Seminar(seminarID2);
             EducationalInstitution ei2 = new EducationalInstitution(seminarScheduleID2);
 
-            SeminarSchedule ssOther = new SeminarSchedule(seminarScheduleID2, dateFormat.parse(datetimeBegins2), dateFormat.parse(datetimeEnds2), a2, s2, ei2, new LinkedList());
+            SeminarSchedule ssOther = new SeminarSchedule(seminarScheduleID2,
+                    Utility.DATETIME_FORMAT.parse(datetimeBegins2),
+                    Utility.DATETIME_FORMAT.parse(datetimeEnds2),
+                    a2, s2, ei2, new LinkedList());
 
             assertEquals(result,
                     seminarSchedule.equals(ssOther));
@@ -317,13 +385,12 @@ public class SeminarScheduleTest extends GenericEntityTest {
             boolean result) {
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-
             Admin a2 = new Admin(seminarID2);
             Seminar s2 = new Seminar(seminarID2);
             EducationalInstitution ei2 = new EducationalInstitution(eiID2);
 
-            SeminarSchedule ssOther = new SeminarSchedule(seminarScheduleID2, dateFormat.parse(datetimeBegins2), dateFormat.parse(datetimeEnds2), a2, s2, ei2, new LinkedList());
+            SeminarSchedule ssOther = new SeminarSchedule(seminarScheduleID2,
+                    Utility.DATETIME_FORMAT.parse(datetimeBegins2), Utility.DATETIME_FORMAT.parse(datetimeEnds2), a2, s2, ei2, new LinkedList());
 
             assertEquals(result,
                     seminarSchedule.equalsAllWithoutSeminarEnrollments(ssOther));

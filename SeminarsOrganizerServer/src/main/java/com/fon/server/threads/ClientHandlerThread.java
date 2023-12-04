@@ -10,7 +10,7 @@ import com.fon.common.intercomm.Response;
 import com.fon.common.intercomm.Communication;
 import com.fon.server.controller.ServerController;
 import com.fon.common.domain.*;
-import com.fon.common.exceptions.ServerValidationException;
+import com.fon.common.exceptions.LoginException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
@@ -318,11 +318,11 @@ public class ClientHandlerThread extends Thread {
      * Checks if the admin is already logged in.
      *
      * @param admin Admin that needs to be checked if he is already logged in.
-     * @throws ServerValidationException If the admin is already logged in.
+     * @throws LoginException If the admin is already logged in.
      */
-    private void checkIfAdminIsAlreadyLoggedIn(Admin admin) throws ServerValidationException {
+    private void checkIfAdminIsAlreadyLoggedIn(Admin admin) throws LoginException {
         if (server.checkIfAdminIsAlreadyLoggedIn(admin)) {
-            throw new ServerValidationException("Већ сте пријављени");
+            throw new LoginException("Већ сте пријављени");
         }
     }
 

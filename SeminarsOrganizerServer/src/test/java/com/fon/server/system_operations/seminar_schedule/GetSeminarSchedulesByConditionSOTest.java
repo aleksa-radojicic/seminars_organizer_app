@@ -34,7 +34,7 @@ public class GetSeminarSchedulesByConditionSOTest {
     void setUp() throws ParseException {
         gssbcSO = new GetSeminarSchedulesByConditionSO();
         String seminarName = "ops";
-        Date date = Utility.DATE_FORMAT.parse("23.12.2023");
+        Date date = Utility.DATE_FORMAT.parse("01.02.2024");
         filter = new LinkedList(List.of(seminarName, date));
     }
 

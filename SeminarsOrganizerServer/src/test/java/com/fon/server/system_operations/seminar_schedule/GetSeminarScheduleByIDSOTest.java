@@ -46,8 +46,8 @@ public class GetSeminarScheduleByIDSOTest {
         seminarEnrollments = new LinkedList(List.of(se1, se2));
 
         int seminarScheduleID = 1;
-        Date datetimeBegins = Utility.DATETIME_FORMAT.parse("23.12.2023 | 10:00");
-        Date datetimeEnds = Utility.DATETIME_FORMAT.parse("23.12.2023 | 18:01");
+        Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 14:00");
+        Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.02.2024 | 16:15");
         Seminar seminar = new Seminar(3, "MLOps: From zero to hero", "Embark on a journey from novice to expert in MLOps using latest solutions and practices", null, null);
         EducationalInstitution educationalInstitution = new EducationalInstitution(3, "IT Centre", "Oakwood 23");
         seminarSchedule = new SeminarSchedule(seminarScheduleID, datetimeBegins, datetimeEnds, null, seminar, educationalInstitution, seminarEnrollments);

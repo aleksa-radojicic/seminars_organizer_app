@@ -4,16 +4,17 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.Utility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +36,8 @@ public class ParticipantTest extends GenericEntityTest {
     private final String surname = "surname";
     private final Sex sex = Sex.MALE;
     private final String sexString = "MALE";
-    private final Date dateBirth = new Date(1980, 1, 1);
-    private final String dateBirthString = "Sun Feb 01 00:00:00 CET 3880";
+    private Date dateBirth;
+    private final String dateBirthString = "01.01.1980";
     private final Admin createdByAdmin = new Admin();
     private final String createdByAdminIDString = "1";
 
@@ -45,12 +46,12 @@ public class ParticipantTest extends GenericEntityTest {
     private final String nameOther = "nameOther";
     private final String surnameOther = "surnameOther";
     private final String sexStringOther = "FEMALE";
-//    private final Date dateBirthOther = new Date(1970, 1, 1);
-    private final String dateBirthStringOther = "Tue Feb 01 00:00:00 CET 3870";
+    private final String dateBirthStringOther = "02.02.1999";
     private final String createdByAdminIDStringOther = "2";
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
+        dateBirth = Utility.DATE_FORMAT.parse(dateBirthString);
         participant = new Participant(ID, name, surname, sex, dateBirth, createdByAdmin);
         genericEntity = participant;
     }
@@ -138,9 +139,47 @@ public class ParticipantTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setName_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> participant.setName(null));
+    }
+
+    @Test
+    void test_setName_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> participant.setName(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setName_tooLong() {
+        String longName = Utility.STRING_31_LENGTH;
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> participant.setName(longName));
+    }
+
+    @Test
     void test_setSurname() {
         participant.setSurname(surname);
         assertEquals(participant.getSurname(), surname);
+    }
+
+    @Test
+    void test_setSurname_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> participant.setSurname(null));
+    }
+
+    @Test
+    void test_setSurname_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> participant.setSurname(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setSurname_tooLong() {
+        String longSurname = Utility.STRING_31_LENGTH;
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> participant.setSurname(longSurname));
     }
 
     @Test
@@ -156,9 +195,27 @@ public class ParticipantTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setDateBirth_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> participant.setDateBirth(null));
+    }
+
+    @Test
+    void test_setDateBirth_futureDate() throws ParseException {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> participant.setDateBirth(Utility.GET_DATE_FUTURE()));
+    }
+
+    @Test
     void test_setCreatedByAdmin() {
         participant.setCreatedByAdmin(createdByAdmin);
         assertEquals(participant.getCreatedByAdmin(), createdByAdmin);
+    }
+    
+    @Test
+    void test_setCreatedByAdmin_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> participant.setCreatedByAdmin(null));
     }
 
     @Test
@@ -197,12 +254,11 @@ public class ParticipantTest extends GenericEntityTest {
             boolean result) {
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-
             Admin admin2 = new Admin();
             admin2.setAdminID(Integer.parseInt(createdByAdminID2));
 
-            Participant participantOther = new Participant(ID2, name2, surname2, Sex.valueOf(sex2), dateFormat.parse(dateBirth2), admin2);
+            Participant participantOther = new Participant(ID2, name2, surname2, Sex.valueOf(sex2),
+                    Utility.DATE_FORMAT.parse(dateBirth2), admin2);
 
             assertEquals(result,
                     participant.equals(participantOther));
@@ -218,6 +274,6 @@ public class ParticipantTest extends GenericEntityTest {
         assertTrue(participantString.contains(name));
         assertTrue(participantString.contains(surname));
         assertTrue(participantString.contains("м, ") || participantString.contains("ж, "));
-        assertTrue(participantString.contains(participant.getAge() + ""));
+        assertTrue(participantString.contains(participant.getAge().toString()));
     }
 }

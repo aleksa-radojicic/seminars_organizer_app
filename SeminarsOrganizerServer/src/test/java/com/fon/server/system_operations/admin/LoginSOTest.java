@@ -5,7 +5,7 @@
 package com.fon.server.system_operations.admin;
 
 import com.fon.common.domain.Admin;
-import com.fon.common.exceptions.ServerValidationException;
+import com.fon.common.exceptions.LoginException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,20 +73,6 @@ public class LoginSOTest {
     }
 
     @Test
-    void test_preconditions_nullUsername() {
-        admin.setUsername(null);
-        assertThrowsExactly(Exception.class,
-                () -> loginSO.preconditions(admin));
-    }
-
-    @Test
-    void test_preconditions_nullPassword() {
-        admin.setPassword(null);
-        assertThrowsExactly(Exception.class,
-                () -> loginSO.preconditions(admin));
-    }
-
-    @Test
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation() {
         try {
@@ -104,7 +90,7 @@ public class LoginSOTest {
     void test_executeOperation_wrongCredentials_username() {
         try {
             admin.setUsername(username + "Other");
-            assertThrowsExactly(ServerValidationException.class,
+            assertThrowsExactly(LoginException.class,
                     () -> loginSO.execute(admin));
 
         } catch (Exception ex) {
@@ -119,7 +105,7 @@ public class LoginSOTest {
     void test_executeOperation_wrongCredentials_password() {
         try {
             admin.setPassword(password + "Other");
-            assertThrowsExactly(ServerValidationException.class,
+            assertThrowsExactly(LoginException.class,
                     () -> loginSO.execute(admin));
 
         } catch (Exception ex) {

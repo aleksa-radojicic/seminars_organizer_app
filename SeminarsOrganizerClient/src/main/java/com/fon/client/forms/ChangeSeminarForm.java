@@ -2,7 +2,6 @@ package com.fon.client.forms;
 
 import com.fon.client.controller.ClientController;
 import com.fon.common.domain.*;
-import com.fon.common.exceptions.ClientValidationException;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -204,13 +203,10 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         try {
             Seminar seminar = getSeminarFromForm();
-
-            //                JOptionPane.showMessageDialog(rootPane, "Систем је сачувао измене о семинару", "Успешна измена семинара", JOptionPane.INFORMATION_MESSAGE);
-            //                JOptionPane.showMessageDialog(rootPane, "Систем не може учитати о семинару", "Неуспешна измена семинара", JOptionPane.ERROR_MESSAGE);
             ClientController.getInstance().createSeminar(seminar);
             JOptionPane.showMessageDialog(rootPane, "Систем је додао семинар", "Успешно прављење семинара", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (ClientValidationException ex) {
+        } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(ChangeSeminarForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,11 +214,12 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnCreateActionPerformed
 
-    private Seminar getSeminarFromForm() throws ClientValidationException {
-        String name = validateName(txtName.getText());
-        String description = validateDescription(txtDescription.getText());
-        List<SeminarTopic> seminarTopics = validateSeminarTopics(tableModel.getSeminarTopics());
-        Seminar seminar = new Seminar(0, name, description, loggedAdmin, seminarTopics);
+    private Seminar getSeminarFromForm() {
+        String name = txtName.getText();
+        String description = txtDescription.getText();
+        List<SeminarTopic> seminarTopics = tableModel.getSeminarTopics();
+        Seminar seminar = new Seminar(0, name, description, loggedAdmin, null);
+        seminar.setSeminarTopics(seminarTopics);
         addSeminarToSeminarTopics(seminar, seminarTopics);
         return seminar;
     }
@@ -248,7 +245,6 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(rootPane, "Ништа нисте изменили", "Упозорење", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
             setStateForSeminar(seminar);
 
             List<SeminarTopic> seminarTopicsOriginal = seminarOriginal.getSeminarTopics();
@@ -258,8 +254,8 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
             ClientController.getInstance().saveSeminar(seminar);
             JOptionPane.showMessageDialog(rootPane, "Систем је запамтио семинар", "Успешна измена семинара", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (ClientValidationException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(ChangeSeminarForm.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, "Систем не може запамтити семинар", "Успешна измена семинара", JOptionPane.ERROR_MESSAGE);
@@ -304,32 +300,6 @@ public class ChangeSeminarForm extends javax.swing.JDialog {
         tbl.setRowHeight(40);
         TableColumn tcPresenter = tbl.getColumnModel().getColumn(1);
         tcPresenter.setPreferredWidth(1);
-    }
-
-    private String validateName(String name) throws ClientValidationException {
-        if (name.isEmpty()) {
-            throw new ClientValidationException("Име семинара не сме бити празно");
-        }
-        return name;
-    }
-
-    private String validateDescription(String description) throws ClientValidationException {
-        if (description.isEmpty()) {
-            throw new ClientValidationException("Опис семинара не сме бити празан");
-        }
-        return description;
-    }
-
-    private List<SeminarTopic> validateSeminarTopics(List<SeminarTopic> seminarTopics) throws ClientValidationException {
-        for (SeminarTopic seminarTopic : seminarTopics) {
-            if (seminarTopic.getName() == null || seminarTopic.getName().isEmpty()) {
-                throw new ClientValidationException("У табели је неки назив теме семинара празан");
-            }
-            if (seminarTopic.getPresenter() == null || seminarTopic.getPresenter().isEmpty()) {
-                throw new ClientValidationException("У табели је неки предавач теме семинара празан");
-            }
-        }
-        return seminarTopics;
     }
 
     private void addSeminarToSeminarTopics(Seminar seminar, List<SeminarTopic> seminarTopics) {

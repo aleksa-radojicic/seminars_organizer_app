@@ -7,6 +7,7 @@ package com.fon.common.domain;
 import com.fon.common.utils.Utility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +114,7 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
             String name = "name";
             String surname = "surname";
             String sex = "MALE";
-            java.sql.Date dateBirth = new java.sql.Date(1980, 1, 1);
+            java.sql.Date dateBirth = new java.sql.Date(Utility.DATE_FORMAT.parse("01.01.1980").getTime());
 
             when(rs.getInt("participantID")).thenReturn(participantID);
             when(rs.getString("name")).thenReturn(name);
@@ -129,7 +131,7 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
             assertEquals(sex, seminarEnrollmentFromRS.getParticipant().getSex().toString());
             assertEquals(dateBirth, seminarEnrollmentFromRS.getParticipant().getDateBirth());
             assertEquals(notes, seminarEnrollmentFromRS.getNotes());
-        } catch (SQLException ex) {
+        } catch (SQLException | ParseException ex) {
             Logger.getLogger(SeminarEnrollmentTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
@@ -154,10 +156,22 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setSeminarSchedule_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarEnrollment.setSeminarSchedule(null));
+    }
+
+    @Test
     void test_setParticipant() {
         Participant p = new Participant();
         seminarEnrollment.setParticipant(p);
         assertEquals(seminarEnrollment.getParticipant(), p);
+    }
+
+    @Test
+    void test_setParticipant_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarEnrollment.setParticipant(null));
     }
 
     @Test
@@ -167,9 +181,27 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setNotes_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarEnrollment.setNotes(null));
+    }
+
+    @Test
+    void test_setNotes_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarEnrollment.setNotes(Utility.STRING_101_LENGTH));
+    }
+
+    @Test
     void test_setState() {
         seminarEnrollment.setState(State.CREATED);
         assertEquals(State.CREATED, seminarEnrollment.getState());
+    }
+
+    @Test
+    void test_setState_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarEnrollment.setState(null));
     }
 
     @Test

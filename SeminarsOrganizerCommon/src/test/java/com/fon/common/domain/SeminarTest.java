@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -138,9 +139,39 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setName_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setName(null));
+    }
+
+    @Test
+    void test_setName_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminar.setName(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setName_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminar.setName(Utility.STRING_61_LENGTH));
+    }
+
+    @Test
     void test_setDescription() {
         seminar.setDescription(description);
         assertEquals(seminar.getDescription(), description);
+    }
+
+    @Test
+    void test_setDescription_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setDescription(null));
+    }
+
+    @Test
+    void test_setDescription_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminar.setDescription(Utility.STRING_201_LENGTH));
     }
 
     @Test
@@ -150,15 +181,55 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setCreatedByAdmin_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setCreatedByAdmin(null));
+    }
+
+    @Test
     void test_setSeminarTopics() {
         seminar.setSeminarTopics(seminarTopics);
         assertTrue(SeminarTopic.equalsAll(seminarTopics, seminar.getSeminarTopics()));
     }
 
     @Test
+    void test_setSeminarTopics_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setSeminarTopics(null));
+    }
+
+    @Test
+    void test_setSeminarTopics_nameNull() {
+        SeminarTopic st = seminar.getSeminarTopics().get(0);
+        String presenter = st.getPresenter();
+        st = new SeminarTopic();
+        st.setPresenter(presenter);
+        seminar.getSeminarTopics().set(0, st);
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setSeminarTopics(seminar.getSeminarTopics()));
+    }
+
+    @Test
+    void test_setSeminarTopics_presenterNull() {
+        SeminarTopic st = seminar.getSeminarTopics().get(0);
+        String name = st.getName();
+        st = new SeminarTopic();
+        st.setPresenter(name);
+        seminar.getSeminarTopics().set(0, st);
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setSeminarTopics(seminar.getSeminarTopics()));
+    }
+
+    @Test
     void test_setState() {
         seminar.setState(State.CREATED);
         assertEquals(State.CREATED, seminar.getState());
+    }
+
+    @Test
+    void test_setState_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminar.setState(null));
     }
 
     @Test

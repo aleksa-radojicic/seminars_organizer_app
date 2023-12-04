@@ -1,10 +1,8 @@
 package com.fon.client.forms;
 
-import com.fon.client.forms.MainForm;
 import com.fon.client.controller.ClientController;
 import com.fon.common.domain.Admin;
-import com.fon.common.exceptions.ClientValidationException;
-import com.fon.common.exceptions.ServerValidationException;
+import com.fon.common.exceptions.LoginException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -103,8 +101,8 @@ public class LoginForm extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         try {
-            String username = validateUsername(txtUsername.getText());
-            String password = validatePassword(String.valueOf(txtPassword.getPassword()));
+            String username = txtUsername.getText();
+            String password = String.valueOf(txtPassword.getPassword());
 
             Admin admin = new Admin();
             admin.setUsername(username);
@@ -115,30 +113,15 @@ public class LoginForm extends javax.swing.JFrame {
             this.dispose();
             JFrame mainForm = new MainForm(loggedAdmin);
             mainForm.setVisible(true);
-        } catch (ClientValidationException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
-        } catch (ServerValidationException ex) {
+        } catch (LoginException ex) {
             JOptionPane.showMessageDialog(rootPane, "Унели сте неисправне податке за пријаву", "Неуспешна пријава", JOptionPane.ERROR_MESSAGE);
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, "Систем Вас не може пријавити", "Неуспешна пријава", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
-
-    private String validateUsername(String username) throws ClientValidationException {
-        if (username.isEmpty()) {
-            throw new ClientValidationException("Корисничко име не сме бити празно");
-        }
-        return username;
-    }
-
-    private String validatePassword(String password) throws ClientValidationException {
-        if (password.isEmpty()) {
-            throw new ClientValidationException("Лозинка не сме бити празна");
-        }
-        return password;
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel lblPassword;

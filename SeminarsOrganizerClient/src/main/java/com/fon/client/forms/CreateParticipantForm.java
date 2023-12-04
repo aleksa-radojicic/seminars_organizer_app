@@ -4,6 +4,7 @@ import com.fon.client.controller.ClientController;
 import com.fon.common.domain.Admin;
 import com.fon.common.domain.Participant;
 import com.fon.common.domain.Sex;
+import com.fon.common.exceptions.LoginException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,12 +166,14 @@ public class CreateParticipantForm extends javax.swing.JDialog {
             Sex sex = (Sex) cbSex.getSelectedItem();
             Date dateBirth = (Date) txtDateBirth.getValue();
 
-            Participant participant = new Participant(0, name, surname, sex, dateBirth, loggedAdmin);
+            Participant p = new Participant(0, name, surname, sex, dateBirth, loggedAdmin);
 
-            ClientController.getInstance().createParticipant(participant);
+            ClientController.getInstance().createParticipant(p);
 
             JOptionPane.showMessageDialog(rootPane, "Систем је направио учесника", "Успешно прављење учесника", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Грешка при валидацији", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             Logger.getLogger(CreateParticipantForm.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, "Систем не може направити учесника", "Неуспешно прављење учесника", JOptionPane.ERROR_MESSAGE);
@@ -207,7 +210,7 @@ public class CreateParticipantForm extends javax.swing.JDialog {
             cbSex.setSelectedItem(participant.getSex());
             txtDateBirth.setValue(participant.getDateBirth());
             btnCreate.setVisible(false);
-            
+
             txtName.setEditable(false);
             txtSurname.setEditable(false);
             cbSex.setEditable(false);

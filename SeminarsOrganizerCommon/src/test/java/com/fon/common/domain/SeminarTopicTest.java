@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -139,6 +141,12 @@ public class SeminarTopicTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setSeminar_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarTopic.setSeminar(null));
+    }
+
+    @Test
     void test_setSeminarTopicID() {
         seminarTopic.setSeminarTopicID(ID);
         assertEquals(seminarTopic.getSeminarTopicID(), ID);
@@ -151,15 +159,78 @@ public class SeminarTopicTest extends GenericEntityTest {
     }
 
     @Test
+    void test_setName_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarTopic.setName(null));
+    }
+
+    @Test
+    void test_setName_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarTopic.setName(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setName_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarTopic.setName(Utility.STRING_61_LENGTH));
+    }
+
+    @Test
     void test_setPresenter() {
         seminarTopic.setPresenter(presenter);
         assertEquals(seminarTopic.getPresenter(), presenter);
     }
 
     @Test
+    void test_setPresenter_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarTopic.setPresenter(null));
+    }
+
+    @Test
+    void test_setPresenter_empty() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarTopic.setPresenter(Utility.STRING_EMPTY));
+    }
+
+    @Test
+    void test_setPresenter_tooLong() {
+        assertThrowsExactly(IllegalArgumentException.class,
+                () -> seminarTopic.setPresenter(Utility.STRING_61_LENGTH));
+    }
+
+    @Test
     void test_setState() {
         seminarTopic.setState(State.CREATED);
         assertEquals(State.CREATED, seminarTopic.getState());
+    }
+
+    @Test
+    void test_setState_null() {
+        assertThrowsExactly(NullPointerException.class,
+                () -> seminarTopic.setState(null));
+    }
+
+    @Test
+    void test_validateNull() {
+        assertDoesNotThrow(() -> seminarTopic.validateNull());
+    }
+
+    @Test
+    void test_validateNull_nameNull() {
+        SeminarTopic st = new SeminarTopic(seminar, seminarID);
+        st.setPresenter(seminarTopic.getPresenter());
+        assertThrowsExactly(NullPointerException.class,
+                () -> st.validateNull());
+    }
+
+    @Test
+    void test_validateNull_presenterNull() {
+        SeminarTopic st = new SeminarTopic(seminar, seminarID);
+        st.setName(seminarTopic.getName());
+        assertThrowsExactly(NullPointerException.class,
+                () -> st.validateNull());
     }
 
     @Test

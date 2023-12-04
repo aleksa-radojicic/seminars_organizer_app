@@ -80,8 +80,8 @@ public class SeminarTopic implements GenericEntity {
     public SeminarTopic(Seminar seminar, int seminarTopicID, String name, String presenter) {
         this.seminar = seminar;
         this.seminarTopicID = seminarTopicID;
-        this.name = name;
-        this.presenter = presenter;
+        this.name = validateName(name);
+        this.presenter = validatePresenter(presenter);
     }
 
     /**
@@ -123,6 +123,22 @@ public class SeminarTopic implements GenericEntity {
     @Override
     public String setAttributeValues() {
         return String.format("name = '%s', presenter = '%s'", name, presenter);
+    }
+
+    /**
+     * Validates entire {@code SeminarTopic} instance for null value of
+     * attributes.
+     *
+     * @throws NullPointerException When {@code name} or {@code presenter} is
+     * null.
+     */
+    public void validateNull() {
+        if (name == null) {
+            throw new NullPointerException("Certain seminar topic has no name!");
+        }
+        if (presenter == null) {
+            throw new NullPointerException("Certain seminar topic has no presenter!");
+        }
     }
 
     /**
@@ -257,7 +273,30 @@ public class SeminarTopic implements GenericEntity {
      * @param name Name as {@code String}.
      */
     public void setName(String name) {
-        this.name = name;
+        this.name = validateName(name);
+    }
+
+    /**
+     * Validation for name.
+     *
+     * @param name Name as {@code String}.
+     * @return Name as {@code String}.
+     * @throws NullPointerException When {@code name} is null.
+     * @throws IllegalArgumentException When {@code name} is empty or greater
+     * than 60.
+     */
+    private String validateName(String name) throws NullPointerException, IllegalArgumentException {
+        if (name == null) {
+            throw new NullPointerException("Name must not be null!");
+        }
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be empty!");
+        }
+        int maxLength = 60;
+        if (name.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Name must not be greater than %d!", maxLength));
+        }
+        return name;
     }
 
     /**
@@ -275,7 +314,30 @@ public class SeminarTopic implements GenericEntity {
      * @param presenter Presenter as {@code String}.
      */
     public void setPresenter(String presenter) {
-        this.presenter = presenter;
+        this.presenter = validatePresenter(presenter);
+    }
+
+    /**
+     * Validation for name.
+     *
+     * @param presenter Presenter as {@code String}.
+     * @return Presenter as {@code String}.
+     * @throws NullPointerException When {@code presenter} is null.
+     * @throws IllegalArgumentException When {@code presenter} is empty or
+     * greater than 60.
+     */
+    private String validatePresenter(String presenter) throws NullPointerException, IllegalArgumentException {
+        if (presenter == null) {
+            throw new NullPointerException("Presenter must not be null!");
+        }
+        if (presenter.isEmpty()) {
+            throw new IllegalArgumentException("Presenter must not be empty!");
+        }
+        int maxLength = 60;
+        if (presenter.length() > maxLength) {
+            throw new IllegalArgumentException(String.format("Presenter must not be greater than %d!", maxLength));
+        }
+        return presenter;
     }
 
     /**
@@ -293,7 +355,22 @@ public class SeminarTopic implements GenericEntity {
      * @param seminar Seminar as {@code Seminar}.
      */
     public void setSeminar(Seminar seminar) {
-        this.seminar = seminar;
+        this.seminar = validateSeminar(seminar);
+    }
+
+    /**
+     * Validation for seminar.
+     *
+     * @param seminar Seminar which is scheduled as {@code Seminar}.
+     * @return Seminar which is scheduled as {@code Seminar}.
+     * @throws NullPointerException When {@code seminar} is null.
+     *
+     */
+    private Seminar validateSeminar(Seminar seminar) {
+        if (seminar == null) {
+            throw new NullPointerException("Seminar must not be null!");
+        }
+        return seminar;
     }
 
     /**
@@ -320,6 +397,21 @@ public class SeminarTopic implements GenericEntity {
      * @param state State as {@code State}.
      */
     public void setState(State state) {
-        this.state = state;
+        this.state = validateState(state);
+    }
+
+    /**
+     * Validation for state.
+     *
+     * @param state State as {@code State}.
+     * @return State as {@code State}.
+     * @throws NullPointerException When {@code state} is null.
+     *
+     */
+    private State validateState(State state) {
+        if (state == null) {
+            throw new NullPointerException("State must not be null!");
+        }
+        return state;
     }
 }

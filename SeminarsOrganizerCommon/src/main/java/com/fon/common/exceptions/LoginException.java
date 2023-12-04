@@ -5,18 +5,26 @@
 package com.fon.common.exceptions;
 
 /**
- * Exception indicating validation failure for client-related operations (errors
- * regarding validation).
+ * Exception indicating failure of user login.
+ *
+ * <p>
+ * It is thrown in this situations:
+ * </p>
+ *
+ * <ul>
+ * <li>Admin is already logged in;</li>
+ * <li>Admin tried to log in with wrong credentials.</li>
+ * </ul>
  *
  * @author Aleksa
  * @since 0.0.1
  */
-public class ClientValidationException extends Exception {
+public class LoginException extends RuntimeException {
 
     /**
      * Non-parametric constructor.
      */
-    public ClientValidationException() {
+    public LoginException() {
     }
 
     /**
@@ -25,7 +33,7 @@ public class ClientValidationException extends Exception {
      * @param message The detail message describing the validation failure or
      * error condition.
      */
-    public ClientValidationException(String message) {
+    public LoginException(String message) {
         super(message);
     }
 }
