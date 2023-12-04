@@ -323,31 +323,31 @@ public class SeminarTopicTest extends GenericEntityTest {
             seminar2.setSeminarID(seminarIDOther);
 
             //all equal
-            List<SeminarTopic> st2_equal = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_equal = Utility.clone(seminarTopics);
 
             //sizes differ - other is larger
-            List<SeminarTopic> st2_dSize_otherLarger = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dSize_otherLarger = Utility.clone(seminarTopics);
             SeminarTopic st = new SeminarTopic();
             st2_dSize_otherLarger.add(st);
 
             //sizes differ - other is smaller
-            List<SeminarTopic> st2_dSize_otherSmaller = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dSize_otherSmaller = Utility.clone(seminarTopics);
             st2_dSize_otherSmaller.remove(0);
 
             //all equal but seminar
-            List<SeminarTopic> st2_dSeminar = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dSeminar = Utility.clone(seminarTopics);
             st2_dSeminar.get(0).setSeminar(seminar2);
 
             //all equal but seminarTopicID
-            List<SeminarTopic> st2_dSeminarTopicID = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dSeminarTopicID = Utility.clone(seminarTopics);
             st2_dSeminarTopicID.get(0).setSeminarTopicID(IDOther);
 
             //all equal but name
-            List<SeminarTopic> st2_dName = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dName = Utility.clone(seminarTopics);
             st2_dName.get(0).setName(nameOther);
 
             //all equal but presenter
-            List<SeminarTopic> st2_dPresenter = Utility.getDeepCopy(seminarTopics);
+            List<SeminarTopic> st2_dPresenter = Utility.clone(seminarTopics);
             st2_dPresenter.get(0).setPresenter(presenterOther);
 
             return Stream.of(

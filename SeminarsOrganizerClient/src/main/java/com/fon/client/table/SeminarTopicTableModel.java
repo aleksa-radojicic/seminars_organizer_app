@@ -98,7 +98,7 @@ public class SeminarTopicTableModel extends AbstractTableModel {
 
     public void setSeminarTopics(List<SeminarTopic> seminarTopics) throws IOException, ClassNotFoundException {
         this.seminarTopics = seminarTopics;
-        this.seminarTopicsOriginal = Utility.getDeepCopy(this.seminarTopics);
+        this.seminarTopicsOriginal = Utility.clone(this.seminarTopics);
     }
 
     public List<SeminarTopic> getSeminarTopicsOriginal() {

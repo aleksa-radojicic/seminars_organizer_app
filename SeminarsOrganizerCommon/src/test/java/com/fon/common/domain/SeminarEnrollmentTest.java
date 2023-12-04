@@ -293,27 +293,27 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
             Participant p2 = new Participant(participantIDOther);
 
             //all equal
-            List<SeminarEnrollment> se2_equal = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_equal = Utility.clone(seminarEnrollments);
 
             //sizes differ - other is larger
-            List<SeminarEnrollment> se2_dSize_otherLarger = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_dSize_otherLarger = Utility.clone(seminarEnrollments);
             SeminarEnrollment se = new SeminarEnrollment(new SeminarSchedule(21), new Participant(21), "notes21");
             se2_dSize_otherLarger.add(se);
 
             //sizes differ - other is smaller
-            List<SeminarEnrollment> se2_dSize_otherSmaller = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_dSize_otherSmaller = Utility.clone(seminarEnrollments);
             se2_dSize_otherSmaller.remove(0);
 
             //all equal but seminarSchedule
-            List<SeminarEnrollment> se2_dSeminar = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_dSeminar = Utility.clone(seminarEnrollments);
             se2_dSeminar.get(0).setSeminarSchedule(ss2);
 
             //all equal but participant
-            List<SeminarEnrollment> se2_dSeminarTopicID = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_dSeminarTopicID = Utility.clone(seminarEnrollments);
             se2_dSeminarTopicID.get(0).setParticipant(p2);
 
             //all equal but notes
-            List<SeminarEnrollment> se2_dName = Utility.getDeepCopy(seminarEnrollments);
+            List<SeminarEnrollment> se2_dName = Utility.clone(seminarEnrollments);
             se2_dName.get(0).setNotes(notesOther);
 
             return Stream.of(

@@ -1,0 +1,29 @@
+{
+  "seminarID": 1,
+  "name": "ML model data integration",
+  "description": "Delve into the craft of blending varied data origins to construct formidable machine learning model",
+  "createdByAdmin": {
+    "adminID": 2
+  },
+  "seminarTopics": [
+    {
+      "seminarTopicID": 1,
+      "name": "Topic1",
+      "presenter": "Presenter1",
+      "state": "UNCHANGED"
+    },
+    {
+      "seminarTopicID": 2,
+      "name": "Topic2",
+      "presenter": "Presenter2",
+      "state": "UNCHANGED"
+    },
+    {
+      "seminarTopicID": 3,
+      "name": "Topic3",
+      "presenter": "Presenter3",
+      "state": "UNCHANGED"
+    }
+  ],
+  "state": "UNCHANGED"
+}

@@ -4,20 +4,12 @@
  */
 package com.fon.server.system_operations.seminar_schedule;
 
-import com.fon.common.domain.Admin;
-import com.fon.common.domain.EducationalInstitution;
-import com.fon.common.domain.Participant;
-import com.fon.common.domain.Seminar;
 import com.fon.common.domain.SeminarEnrollment;
 import com.fon.common.domain.SeminarSchedule;
-import com.fon.common.utils.Utility;
+import com.fon.common.utils.IOJson;
 import com.fon.server.repository.db.DbRepository;
 import com.fon.server.repository.db.impl.RepositoryDbGeneric;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,24 +36,11 @@ public class CreateSeminarScheduleSOTest {
     void setUp() throws ParseException {
         cssSO = new CreateSeminarScheduleSO();
 
-        final int seminarScheduleID = 1000;
-        final Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 14:00");
-        final Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.02.2024 | 16:15");
-        final int createdByAdminID = 1;
-        final Admin createdByAdmin = new Admin(createdByAdminID);
-
-        final int seminarID = 1;
-        final Seminar seminar = new Seminar(seminarID);
-        final int eiID = 1;
-        final EducationalInstitution educationalInstitution = new EducationalInstitution(eiID);
-
-        SeminarEnrollment se1 = new SeminarEnrollment(null, new Participant(5), "notes11");
-        SeminarEnrollment se2 = new SeminarEnrollment(null, new Participant(6), "notes12");
-        List<SeminarEnrollment> seminarEnrollments = new LinkedList(Arrays.asList(se1, se2));
-
-        seminarSchedule = new SeminarSchedule(seminarScheduleID, datetimeBegins, datetimeEnds, createdByAdmin, seminar, educationalInstitution, seminarEnrollments);
-
-        seminarEnrollments.forEach(x -> x.setSeminarSchedule(seminarSchedule));
+        seminarSchedule = (SeminarSchedule) IOJson.deserializeJson("seminar_schedule", SeminarSchedule.class);
+        //in seminar_schedule.json is seminarScheduleID of seminar schedule that already exists
+        //in db, thus it needs to be changed
+        seminarSchedule.setSeminarScheduleID(1001);
+        seminarSchedule.getSeminarEnrollments().forEach(x -> x.setSeminarSchedule(seminarSchedule));
     
         gssbidSO = new GetSeminarScheduleByIDSO();
     }

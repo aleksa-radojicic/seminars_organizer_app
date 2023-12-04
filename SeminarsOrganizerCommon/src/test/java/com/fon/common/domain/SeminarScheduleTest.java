@@ -415,6 +415,26 @@ public class SeminarScheduleTest extends GenericEntityTest {
         assertFalse(seminarSchedule.equalsAll(new Exception()));
     }
 
+    /**
+     * All cases checked:
+     *
+     * <ul>
+     * <li>all equal</li>
+     * <li>all equal but seminarScheduleID</li>
+     * <li>all equal but name</li>
+     * <li>all equal but description</li>
+     * <li>all equal but createdByAdmin</li>
+     * <li>all equal but seminar</li>
+     * <li>all equal but educationalInstitution</li>
+     * <li>all equal but seminarTopics sizes differ - other is larger</li>
+     * <li>all equal but seminarTopics - different list sizes</li>
+     * </ul>
+     *
+     * @param ss Original {@code SeminarSchedule} instance (from JSON).
+     * @param ssOther Other {@code SeminarSchedule} instance.
+     * @param result {@code true} if {@code ss} and {
+     * @ssOther} are totally equaled.
+     */
     @ParameterizedTest
     @MethodSource("seminarScheduleEqualsAllProvider")
     void test_equalsAll(SeminarSchedule ss, SeminarSchedule ssOther, boolean result) {
@@ -424,45 +444,17 @@ public class SeminarScheduleTest extends GenericEntityTest {
     static Stream<Arguments> seminarScheduleEqualsAllProvider() {
         try {
             seminarScheduleInitializer();
-
-            List<SeminarEnrollment> seminarEnrollments2 = Utility.getDeepCopy(seminarEnrollments);
-
-            //all equal
-            SeminarSchedule ss2_equal = Utility.getDeepCopy(seminarSchedule);
-
-            //all equal but seminarID
-            SeminarSchedule ss2_dID = getSeminarScheduleDSeminarScheduleID();
-
-            //all equal but name
-            SeminarSchedule ss2_dDatetimeBegins = getSeminarScheduleDDatetimeBegins();
-
-            //all equal but description
-            SeminarSchedule ss2_dDatetimeEnds = getSeminarScheduleDDatetimeEnds();
-
-            //all equal but createdByAdmin
-            SeminarSchedule ss2_dCreatedByAdmin = getSeminarScheduleDCreatedByAdmin();
-
-            //all equal but seminar
-            SeminarSchedule ss2_dSeminar = getSeminarScheduleDSeminar();
-
-            //all equal but educationalInstitution
-            SeminarSchedule ss2_dEducationalInstitution = getSeminarScheduleDEducationalInstitution();
-
-            //all equal but seminarTopics sizes differ - other is larger
-            SeminarSchedule ss2_dTopics_dSize_otherLarger = getSeminarScheduleDTopics_dSize_otherLarger(seminarEnrollments2);
-
-            //all equal but seminarTopics - different list sizes
-            SeminarSchedule ss2_dTopics_dSize_otherSmaller = getSeminarScheduleDTopics_dSize_otherSmaller(seminarEnrollments2);
+            List<SeminarEnrollment> seminarEnrollments2 = Utility.clone(seminarEnrollments);
             return Stream.of(
-                    arguments(seminarSchedule, ss2_equal, true),
-                    arguments(seminarSchedule, ss2_dID, false),
-                    arguments(seminarSchedule, ss2_dDatetimeBegins, false),
-                    arguments(seminarSchedule, ss2_dDatetimeEnds, false),
-                    arguments(seminarSchedule, ss2_dCreatedByAdmin, false),
-                    arguments(seminarSchedule, ss2_dEducationalInstitution, false),
-                    arguments(seminarSchedule, ss2_dSeminar, false),
-                    arguments(seminarSchedule, ss2_dTopics_dSize_otherLarger, false),
-                    arguments(seminarSchedule, ss2_dTopics_dSize_otherSmaller, false)
+                    arguments(seminarSchedule, Utility.clone(seminarSchedule), true),
+                    arguments(seminarSchedule, getSeminarScheduleDSeminarScheduleID(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDDatetimeBegins(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDDatetimeEnds(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDCreatedByAdmin(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDSeminar(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDEducationalInstitution(), false),
+                    arguments(seminarSchedule, getSeminarScheduleDTopics_dSize_otherLarger(seminarEnrollments2), false),
+                    arguments(seminarSchedule, getSeminarScheduleDTopics_dSize_otherSmaller(seminarEnrollments2), false)
             );
         } catch (Exception ex) {
             Logger.getLogger(SeminarTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -470,22 +462,22 @@ public class SeminarScheduleTest extends GenericEntityTest {
         }
     }
 
-    private static SeminarSchedule getSeminarScheduleDSeminarScheduleID() throws ClassNotFoundException, Exception, IOException {
-        SeminarSchedule ss2_dID = Utility.getDeepCopy(seminarSchedule);
+    private static SeminarSchedule getSeminarScheduleDSeminarScheduleID() throws ClassNotFoundException, IOException {
+        SeminarSchedule ss2_dID = Utility.clone(seminarSchedule);
         ss2_dID.setSeminarScheduleID(IDOther);
         ss2_dID.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dID));
         return ss2_dID;
     }
 
     private static SeminarSchedule getSeminarScheduleDDatetimeBegins() throws IOException, ClassNotFoundException {
-        SeminarSchedule ss2_dDatetimeBegins = Utility.getDeepCopy(seminarSchedule);
+        SeminarSchedule ss2_dDatetimeBegins = Utility.clone(seminarSchedule);
         ss2_dDatetimeBegins.setDatetimeBegins(datetimeBeginsOther);
         ss2_dDatetimeBegins.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dDatetimeBegins));
         return ss2_dDatetimeBegins;
     }
 
     private static SeminarSchedule getSeminarScheduleDDatetimeEnds() throws IOException, ClassNotFoundException {
-        SeminarSchedule ss2_dDatetimeEnds = Utility.getDeepCopy(seminarSchedule);
+        SeminarSchedule ss2_dDatetimeEnds = Utility.clone(seminarSchedule);
         ss2_dDatetimeEnds.setDatetimeEnds(datetimeEndsOther);
         ss2_dDatetimeEnds.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dDatetimeEnds));
 
@@ -494,23 +486,23 @@ public class SeminarScheduleTest extends GenericEntityTest {
 
     private static SeminarSchedule getSeminarScheduleDCreatedByAdmin() throws IOException, ClassNotFoundException {
         Admin a2 = new Admin(createdByAdminIDOther);
-        SeminarSchedule ss2_dCreatedByAdmin = Utility.getDeepCopy(seminarSchedule);
+        SeminarSchedule ss2_dCreatedByAdmin = Utility.clone(seminarSchedule);
         ss2_dCreatedByAdmin.setCreatedByAdmin(a2);
         ss2_dCreatedByAdmin.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dCreatedByAdmin));
 
         return ss2_dCreatedByAdmin;
     }
 
-    private static SeminarSchedule getSeminarScheduleDSeminar() throws ClassNotFoundException, Exception, IOException {
-        SeminarSchedule ss2_dSeminar = Utility.getDeepCopy(seminarSchedule);
+    private static SeminarSchedule getSeminarScheduleDSeminar() throws ClassNotFoundException, IOException {
+        SeminarSchedule ss2_dSeminar = Utility.clone(seminarSchedule);
         ss2_dSeminar.setSeminar(new Seminar(seminarIDOther));
         ss2_dSeminar.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dSeminar));
 
         return ss2_dSeminar;
     }
 
-    private static SeminarSchedule getSeminarScheduleDEducationalInstitution() throws ClassNotFoundException, Exception, IOException {
-        SeminarSchedule ss2_dEducationalInstitution = Utility.getDeepCopy(seminarSchedule);
+    private static SeminarSchedule getSeminarScheduleDEducationalInstitution() throws ClassNotFoundException, IOException {
+        SeminarSchedule ss2_dEducationalInstitution = Utility.clone(seminarSchedule);
         ss2_dEducationalInstitution.setEducationalInstitution(new EducationalInstitution(eiIDOther));
         ss2_dEducationalInstitution.getSeminarEnrollments().forEach((x) -> x.setSeminarSchedule(ss2_dEducationalInstitution));
 
@@ -518,9 +510,9 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     private static SeminarSchedule getSeminarScheduleDTopics_dSize_otherLarger(List seminarEnrollments2) throws IOException, ClassNotFoundException {
-        SeminarSchedule ss2_dTopics_dSize_otherLarger = Utility.getDeepCopy(seminarSchedule);
+        SeminarSchedule ss2_dTopics_dSize_otherLarger = Utility.clone(seminarSchedule);
 
-        List<SeminarEnrollment> seminarEnrollments2_dSize = Utility.getDeepCopy(seminarEnrollments2);
+        List<SeminarEnrollment> seminarEnrollments2_dSize = Utility.clone(seminarEnrollments2);
 
         SeminarEnrollment se24 = new SeminarEnrollment(ss2_dTopics_dSize_otherLarger, new Participant(24), "notes24");
         seminarEnrollments2_dSize.add(se24);
@@ -532,9 +524,9 @@ public class SeminarScheduleTest extends GenericEntityTest {
     }
 
     private static SeminarSchedule getSeminarScheduleDTopics_dSize_otherSmaller(List seminarEnrollments2) throws IOException, ClassNotFoundException {
-        SeminarSchedule ss2_dTopics_dSize_otherSmaller = Utility.getDeepCopy(seminarSchedule);
+        SeminarSchedule ss2_dTopics_dSize_otherSmaller = Utility.clone(seminarSchedule);
 
-        List<SeminarEnrollment> seminarEnrollments2_dSize = Utility.getDeepCopy(seminarEnrollments2);
+        List<SeminarEnrollment> seminarEnrollments2_dSize = Utility.clone(seminarEnrollments2);
         seminarEnrollments2_dSize.remove(0);
 
         seminarEnrollments2_dSize.forEach((x) -> x.setSeminarSchedule(ss2_dTopics_dSize_otherSmaller));

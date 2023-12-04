@@ -5,10 +5,8 @@
 package com.fon.server.system_operations.seminar;
 
 import com.fon.common.domain.Seminar;
-import com.fon.common.domain.SeminarTopic;
+import com.fon.common.utils.IOJson;
 import java.text.ParseException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,30 +26,22 @@ public class GetSeminarByIDSOTest {
 
     private GetSeminarByIDSO gsbidSO;
     private Seminar seminar;
-    private final int seminarID = 1;
-    private final String name = "ML model data integration";
-    private final String description = "Delve into the craft of blending varied data origins to construct formidable machine learning model";
-    private List<SeminarTopic> seminarTopics;
-
-    private final int filterID = seminarID;
+    private int filterID;
 
     @BeforeEach
     void setUp() throws ParseException {
-        SeminarTopic st1 = new SeminarTopic(null, 1, "Topic1", "Presenter1");
-        SeminarTopic st2 = new SeminarTopic(null, 2, "Topic2", "Presenter2");
-        SeminarTopic st3 = new SeminarTopic(null, 3, "Topic3", "Presenter3");
-        seminarTopics = new LinkedList(List.of(st1, st2, st3));
-        seminar = new Seminar(seminarID, name, description, null, seminarTopics);
-        seminarTopics.forEach(x -> x.setSeminar(seminar));
-
         gsbidSO = new GetSeminarByIDSO();
+
+        seminar = (Seminar) IOJson.deserializeJson("seminar", Seminar.class);
+        seminar.getSeminarTopics().forEach(x -> x.setSeminar(seminar));
+
+        filterID = seminar.getSeminarID();
     }
 
     @AfterEach
     void tearDown() {
-        seminarTopics = null;
-        seminar = null;
         gsbidSO = null;
+        seminar = null;
     }
 
     @Test

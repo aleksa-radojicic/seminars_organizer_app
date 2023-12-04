@@ -4,14 +4,12 @@
  */
 package com.fon.server.system_operations.seminar;
 
-import com.fon.common.domain.Admin;
 import com.fon.common.domain.Seminar;
 import com.fon.common.domain.SeminarTopic;
 import com.fon.common.domain.State;
+import com.fon.common.utils.IOJson;
 import com.fon.server.repository.db.DbRepository;
 import com.fon.server.repository.db.impl.RepositoryDbGeneric;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,20 +36,10 @@ public class SaveSeminarSOTest {
     @BeforeEach
     void setUp() {
         ssSO = new SaveSeminarSO();
-
-        int seminarID = 1001;
-        String name = "name";
-        String description = "description";
-        Admin createdByAdmin = new Admin(2);
-
-        SeminarTopic st11 = new SeminarTopic(null, 1, "st1", "st name 1");
-        SeminarTopic st12 = new SeminarTopic(null, 2, "st2", "st name 2");
-        SeminarTopic st13 = new SeminarTopic(null, 3, "st3", "st name 3");
-        List<SeminarTopic> seminarTopics = new LinkedList(List.of(st11, st12, st13));
-
-        seminar = new Seminar(seminarID, name, description, createdByAdmin, seminarTopics);
-
-        seminarTopics.forEach(x -> x.setSeminar(seminar));
+        
+        seminar = (Seminar) IOJson.deserializeJson("seminar", Seminar.class);
+        seminar.setSeminarID(1001);
+        seminar.getSeminarTopics().forEach(x -> x.setSeminar(seminar));
 
         gsbidSO = new GetSeminarByIDSO();
         csSO = new CreateSeminarSO();

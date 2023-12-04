@@ -1,0 +1,40 @@
+{
+  "seminarScheduleID": 1,
+  "datetimeBegins": "Feb 1, 2024, 2:00:00 PM",
+  "datetimeEnds": "Feb 1, 2024, 4:15:00 PM",
+  "createdByAdmin": {
+    "adminID": 1
+  },
+  "seminar": {
+    "seminarID": 3,
+    "name": "MLOps: From zero to hero",
+    "description": "Embark on a journey from novice to expert in MLOps using latest solutions and practices",
+    "state": "UNCHANGED"
+  },
+  "educationalInstitution": {
+    "educationalInstitutionID": 3,
+    "name": "IT Centre",
+    "address": "Oakwood 23"
+  },
+  "seminarEnrollments": [
+    {
+      "participant": {
+        "participantID": 1,
+        "sex": "MALE",
+        "dateBirth": "Dec 4, 2023, 3:41:45 AM"
+      },
+      "notes": "test",
+      "state": "UNCHANGED"
+    },
+    {
+      "participant": {
+        "participantID": 2,
+        "sex": "MALE",
+        "dateBirth": "Dec 4, 2023, 3:41:45 AM"
+      },
+      "notes": "",
+      "state": "UNCHANGED"
+    }
+  ],
+  "state": "UNCHANGED"
+}

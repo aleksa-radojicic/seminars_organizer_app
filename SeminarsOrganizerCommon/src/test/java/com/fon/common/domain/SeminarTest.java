@@ -303,7 +303,7 @@ public class SeminarTest extends GenericEntityTest {
 
         try {
             //all equal
-            Seminar s2_equal = Utility.getDeepCopy(seminar);
+            Seminar s2_equal = Utility.clone(seminar);
 
             //all equal but seminarID
             Seminar s2_dID = getSeminarDSeminarID();
@@ -338,19 +338,19 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     private static Seminar getSeminarDSeminarID() throws ClassNotFoundException, Exception, IOException {
-        Seminar s2_dID = Utility.getDeepCopy(seminar);
+        Seminar s2_dID = Utility.clone(seminar);
         s2_dID.setSeminarID(IDOther);
         return s2_dID;
     }
 
     private static Seminar getSeminarDName() throws IOException, ClassNotFoundException {
-        Seminar s2_dName = Utility.getDeepCopy(seminar);
+        Seminar s2_dName = Utility.clone(seminar);
         s2_dName.setName(nameOther);
         return s2_dName;
     }
 
     private static Seminar getSeminarDDescription() throws IOException, ClassNotFoundException {
-        Seminar s2_dDescription = Utility.getDeepCopy(seminar);
+        Seminar s2_dDescription = Utility.clone(seminar);
         s2_dDescription.setDescription(descriptionOther);
 
         return s2_dDescription;
@@ -359,16 +359,16 @@ public class SeminarTest extends GenericEntityTest {
     private static Seminar getSeminarDCreatedByAdmin() throws IOException, ClassNotFoundException {
         Admin a2 = new Admin();
         a2.setAdminID(createdByAdminIDOther);
-        Seminar s2_dCreatedByAdmin = Utility.getDeepCopy(seminar);
+        Seminar s2_dCreatedByAdmin = Utility.clone(seminar);
         s2_dCreatedByAdmin.setCreatedByAdmin(a2);
 
         return s2_dCreatedByAdmin;
     }
 
     private static Seminar getSeminarDTopics_dSize_otherLarger(List seminarTopics2) throws IOException, ClassNotFoundException {
-        Seminar s2_dTopics_dSize_otherLarger = Utility.getDeepCopy(seminar);
+        Seminar s2_dTopics_dSize_otherLarger = Utility.clone(seminar);
 
-        List<SeminarTopic> seminarTopics2_dSize = Utility.getDeepCopy(seminarTopics2);
+        List<SeminarTopic> seminarTopics2_dSize = Utility.clone(seminarTopics2);
 
         SeminarTopic st24 = new SeminarTopic(s2_dTopics_dSize_otherLarger, 24, "st24", "st name 24");
         seminarTopics2_dSize.add(st24);
@@ -380,9 +380,9 @@ public class SeminarTest extends GenericEntityTest {
     }
 
     private static Seminar getSeminarDTopics_dSize_otherSmaller(List seminarTopics2) throws IOException, ClassNotFoundException {
-        Seminar s2_dTopics_dSize_otherSmaller = Utility.getDeepCopy(seminar);
+        Seminar s2_dTopics_dSize_otherSmaller = Utility.clone(seminar);
 
-        List<SeminarTopic> seminarTopics2_dSize = Utility.getDeepCopy(seminarTopics2);
+        List<SeminarTopic> seminarTopics2_dSize = Utility.clone(seminarTopics2);
         seminarTopics2_dSize.remove(0);
 
         seminarTopics2_dSize.forEach((x) -> x.setSeminar(s2_dTopics_dSize_otherSmaller));
