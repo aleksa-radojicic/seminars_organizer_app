@@ -1,0 +1,56 @@
+[
+  {
+    "seminarSchedule": {
+      "seminarScheduleID": 1,
+      "datetimeBegins": "Dec 5, 2024, 3:25:54 AM",
+      "datetimeEnds": "Dec 5, 2024, 3:25:54 AM",
+      "seminarEnrollments": [],
+      "state": "UNCHANGED"
+    },
+    "participant": {
+      "participantID": 1,
+      "name": "aleksa",
+      "surname": "radojicic",
+      "sex": "MALE",
+      "dateBirth": "Dec 20, 2000, 3:25:54 AM"
+    },
+    "notes": "notes1",
+    "state": "UNCHANGED"
+  },
+  {
+    "seminarSchedule": {
+      "seminarScheduleID": 1,
+      "datetimeBegins": "Dec 5, 2024, 3:25:54 AM",
+      "datetimeEnds": "Dec 5, 2024, 3:25:54 AM",
+      "seminarEnrollments": [],
+      "state": "UNCHANGED"
+    },
+    "participant": {
+      "participantID": 1,
+      "name": "milan",
+      "surname": "rudan",
+      "sex": "MALE",
+      "dateBirth": "May 5, 2000, 3:25:54 AM"
+    },
+    "notes": "",
+    "state": "UNCHANGED"
+  },
+  {
+    "seminarSchedule": {
+      "seminarScheduleID": 1,
+      "datetimeBegins": "Dec 5, 2024, 3:25:54 AM",
+      "datetimeEnds": "Dec 5, 2024, 3:25:54 AM",
+      "seminarEnrollments": [],
+      "state": "UNCHANGED"
+    },
+    "participant": {
+      "participantID": 1,
+      "name": "test",
+      "surname": "testic",
+      "sex": "FEMALE",
+      "dateBirth": "Oct 1, 2002, 5:25:54 AM"
+    },
+    "notes": "notes3",
+    "state": "UNCHANGED"
+  }
+]

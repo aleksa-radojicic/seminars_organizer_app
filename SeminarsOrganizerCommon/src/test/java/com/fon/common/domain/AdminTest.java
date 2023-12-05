@@ -58,6 +58,7 @@ public class AdminTest extends GenericEntityTest {
     @AfterEach
     void tearDown() {
         admin = null;
+        genericEntity = null;
     }
 
     @Test
@@ -305,7 +306,7 @@ public class AdminTest extends GenericEntityTest {
             case "name" ->
                 modifiedAdmin.setName(nameOther);
             case "surname" ->
-                modifiedAdmin.setSurname(usernameOther);
+                modifiedAdmin.setSurname(surnameOther);
             default ->
                 throw new AssertionError();
         }

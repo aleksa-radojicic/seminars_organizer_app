@@ -40,6 +40,7 @@ public class LoginSOTest {
     void tearDown() {
         loginSO = null;
         admin = null;
+        loggedAdmin = null;
     }
 
     @Test

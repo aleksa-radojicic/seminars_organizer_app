@@ -4,7 +4,9 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -14,17 +16,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,40 +36,38 @@ import static org.mockito.Mockito.when;
  */
 public class SeminarTopicTest extends GenericEntityTest {
 
-    private static SeminarTopic seminarTopic;
-    private static final Seminar seminar = new Seminar();
-    private static final int seminarID = 1;
-    private static final String seminarIDString = "1";
-    private static final int ID = 1;
-    private static final String IDString = "1";
-    private static final String name = "name";
-    private static final String presenter = "presenter";
+    private static SeminarTopic st;
 
     private static List<SeminarTopic> seminarTopics;
 
-    private static int seminarIDOther = 2;
-    private static final String seminarIDStringOther = "2";
-    private static final int IDOther = 2;
-    private static final String IDStringOther = "2";
-    private static final String nameOther = "nameOther";
-    private static final String presenterOther = "presenterOther";
+    private static Seminar seminarOther;
+    private static int IDOther;
+    private static String nameOther;
+    private static String presenterOther;
+
+    public static void initializeSeminarTopics() {
+        SeminarTopic[] seminarTopicsArray = (SeminarTopic[]) IOJson.deserializeJson("seminar_topics", SeminarTopic[].class);
+        seminarTopics = new LinkedList(Arrays.asList(seminarTopicsArray));
+
+        st = seminarTopics.get(0);
+
+        int seminarIDOther = st.getSeminar().getSeminarID() + 1;
+        seminarOther = new Seminar(seminarIDOther);
+        IDOther = st.getSeminarTopicID() + 1;
+        nameOther = st.getName() + Utility.STRING_OTHER;
+        presenterOther = st.getPresenter()+ Utility.STRING_OTHER;
+    }
 
     @BeforeEach
     void setUp() {
-        seminar.setSeminarID(seminarID);
-        seminarTopic = new SeminarTopic(seminar, ID, name, presenter);
-
-        SeminarTopic st11 = new SeminarTopic(seminar, 11, "st11", "st name 11");
-        SeminarTopic st12 = new SeminarTopic(seminar, 12, "st12", "st name 12");
-        SeminarTopic st13 = new SeminarTopic(seminar, 13, "st13", "st name 13");
-        seminarTopics = new LinkedList(Arrays.asList(st11, st12, st13));
-
-        genericEntity = seminarTopic;
+        initializeSeminarTopics();
+        genericEntity = st;
     }
 
     @AfterEach
     void tearDown() {
-        seminarTopic = null;
+        st = null;
+        genericEntity = null;
     }
 
     @Test
@@ -79,23 +78,23 @@ public class SeminarTopicTest extends GenericEntityTest {
     @Test
     void test_getAttributeValues() {
         super.test_getAttributeValues(String.format("%d, %d, '%s', '%s'",
-                seminarID, ID, name, presenter));
+                st.getSeminar().getSeminarID(), st.getSeminarTopicID(), st.getName(), st.getPresenter()));
     }
 
     @Test
     void test_getID() {
-        super.test_getID(seminarTopic.getSeminarTopicID());
+        super.test_getID(st.getSeminarTopicID());
     }
 
     @Test
     void test_setID() {
-        super.test_setID(seminarTopic.getSeminarTopicID());
+        super.test_setID(st.getSeminarTopicID());
     }
 
     @Test
     void test_setAttributeValues() {
-        String expectedValue = String.format("name = '%s', presenter = '%s'", name, presenter);
-        assertEquals(expectedValue, seminarTopic.setAttributeValues());
+        String expectedValue = String.format("name = '%s', presenter = '%s'", st.getName(), st.getPresenter());
+        assertEquals(expectedValue, st.setAttributeValues());
     }
 
     @Test
@@ -108,14 +107,14 @@ public class SeminarTopicTest extends GenericEntityTest {
         try {
             ResultSet rs = mock(ResultSet.class);
 
-            when(rs.getInt("seminarTopicID")).thenReturn(ID);
-            when(rs.getString("name")).thenReturn(name);
-            when(rs.getString("presenter")).thenReturn(presenter);
+            when(rs.getInt("seminarTopicID")).thenReturn(st.getSeminarTopicID());
+            when(rs.getString("name")).thenReturn(st.getName());
+            when(rs.getString("presenter")).thenReturn(st.getPresenter());
 
-            SeminarTopic seminarTopicFromRS = (SeminarTopic) seminarTopic.getEntityFromResultSet(rs);
-            assertEquals(ID, seminarTopicFromRS.getSeminarTopicID());
-            assertEquals(name, seminarTopicFromRS.getName());
-            assertEquals(presenter, seminarTopicFromRS.getPresenter());
+            SeminarTopic seminarTopicFromRS = (SeminarTopic) st.getEntityFromResultSet(rs);
+            assertEquals(st.getSeminarTopicID(), seminarTopicFromRS.getSeminarTopicID());
+            assertEquals(st.getName(), seminarTopicFromRS.getName());
+            assertEquals(st.getPresenter(), seminarTopicFromRS.getPresenter());
         } catch (SQLException ex) {
             Logger.getLogger(SeminarTopicTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
@@ -124,254 +123,263 @@ public class SeminarTopicTest extends GenericEntityTest {
 
     @Test
     void test_getQueryCondition() {
-        super.test_getQueryCondition(String.format("seminarID = %d AND seminarTopicID = %d ", seminar.getSeminarID(), ID));
+        super.test_getQueryCondition(String.format("seminarID = %d AND seminarTopicID = %d ", st.getSeminar().getSeminarID(), st.getSeminarTopicID()));
     }
 
     @Test
     void test_getState() {
-        assertEquals(State.UNCHANGED, seminarTopic.getState());
+        assertEquals(State.UNCHANGED, st.getState());
     }
 
     //tests for class specific methods
     @Test
     void test_setSeminar() {
         Seminar s = new Seminar();
-        seminarTopic.setSeminar(s);
-        assertEquals(seminarTopic.getSeminar(), s);
+        st.setSeminar(s);
+        assertEquals(st.getSeminar(), s);
     }
 
     @Test
     void test_setSeminar_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarTopic.setSeminar(null));
+                () -> st.setSeminar(null));
     }
 
     @Test
     void test_setSeminarTopicID() {
-        seminarTopic.setSeminarTopicID(ID);
-        assertEquals(seminarTopic.getSeminarTopicID(), ID);
+        st.setSeminarTopicID(IDOther);
+        assertEquals(st.getSeminarTopicID(), IDOther);
     }
 
     @Test
     void test_setName() {
-        seminarTopic.setName(name);
-        assertEquals(seminarTopic.getName(), name);
+        st.setName(nameOther);
+        assertEquals(st.getName(), nameOther);
     }
 
     @Test
     void test_setName_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarTopic.setName(null));
+                () -> st.setName(null));
     }
 
     @Test
     void test_setName_empty() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> seminarTopic.setName(Utility.STRING_EMPTY));
+                () -> st.setName(Utility.STRING_EMPTY));
     }
 
     @Test
     void test_setName_tooLong() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> seminarTopic.setName(Utility.STRING_61_LENGTH));
+                () -> st.setName(Utility.STRING_61_LENGTH));
     }
 
     @Test
     void test_setPresenter() {
-        seminarTopic.setPresenter(presenter);
-        assertEquals(seminarTopic.getPresenter(), presenter);
+        st.setPresenter(presenterOther);
+        assertEquals(st.getPresenter(), presenterOther);
     }
 
     @Test
     void test_setPresenter_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarTopic.setPresenter(null));
+                () -> st.setPresenter(null));
     }
 
     @Test
     void test_setPresenter_empty() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> seminarTopic.setPresenter(Utility.STRING_EMPTY));
+                () -> st.setPresenter(Utility.STRING_EMPTY));
     }
 
     @Test
     void test_setPresenter_tooLong() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> seminarTopic.setPresenter(Utility.STRING_61_LENGTH));
+                () -> st.setPresenter(Utility.STRING_61_LENGTH));
     }
 
     @Test
     void test_setState() {
-        seminarTopic.setState(State.CREATED);
-        assertEquals(State.CREATED, seminarTopic.getState());
+        st.setState(State.CREATED);
+        assertEquals(State.CREATED, st.getState());
     }
 
     @Test
     void test_setState_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarTopic.setState(null));
+                () -> st.setState(null));
     }
 
     @Test
     void test_validateNull() {
-        assertDoesNotThrow(() -> seminarTopic.validateNull());
+        assertDoesNotThrow(() -> st.validateNull());
     }
 
     @Test
     void test_validateNull_nameNull() {
-        SeminarTopic st = new SeminarTopic(seminar, seminarID);
-        st.setPresenter(seminarTopic.getPresenter());
+        SeminarTopic seminarTopic = new SeminarTopic(st.getSeminar(), st.getSeminarTopicID());
+        seminarTopic.setPresenter(st.getPresenter());
         assertThrowsExactly(NullPointerException.class,
-                () -> st.validateNull());
+                () -> seminarTopic.validateNull());
     }
 
     @Test
     void test_validateNull_presenterNull() {
-        SeminarTopic st = new SeminarTopic(seminar, seminarID);
-        st.setName(seminarTopic.getName());
+        SeminarTopic seminarTopic = new SeminarTopic(st.getSeminar(), st.getSeminarTopicID());
+        seminarTopic.setName(st.getName());
         assertThrowsExactly(NullPointerException.class,
-                () -> st.validateNull());
+                () -> seminarTopic.validateNull());
     }
 
     @Test
     void test_equals_sameObject() {
-        assertTrue(seminarTopic.equals(seminarTopic));
+        assertTrue(st.equals(st));
     }
 
     @Test
     void test_equals_null() {
-        assertFalse(seminarTopic.equals(null));
+        assertFalse(st.equals(null));
     }
 
     @Test
     void test_equals_differentClass() {
-        assertFalse(seminarTopic.equals(new Exception()));
+        assertFalse(st.equals(new Exception()));
     }
 
+    /*
+    Cases checked:
+    -> all equal
+    -> all equal but seminar
+    -> all equal but seminarTopicID
+    -> all equal but name
+    -> all equal but presenter
+     */
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        seminarIDString + "," + IDString + "," + name + "," + presenter + ",true",
-        //all equal but seminar
-        seminarIDStringOther + "," + IDString + "," + name + "," + presenter + ",false",
-        //all equal but seminarTopicID
-        seminarIDString + "," + IDStringOther + "," + name + "," + presenter + ",false",
-        //all equal but name
-        seminarIDString + "," + IDString + "," + nameOther + "," + presenter + ",true",
-        //all equal but description
-        seminarIDString + "," + IDString + "," + name + "," + presenterOther + ",true"
-    })
-    void test_equals(int seminarID2, int ID2, String name2, String presenter2,
-            boolean result) {
+    @MethodSource("equalsProvider")
+    void test_equals(SeminarTopic stOther, boolean result) {
+        assertEquals(result, st.equals(stOther));
+    }
 
-        Seminar s2 = new Seminar();
-        s2.setSeminarID(seminarID2);
-        SeminarTopic seminarTopicOther = new SeminarTopic(s2, ID2, name2, presenter2);
-
-        assertEquals(result,
-                seminarTopic.equals(seminarTopicOther));
+    static Stream<Arguments> equalsProvider() throws Exception {
+        initializeSeminarTopics();
+        return Stream.of(
+                arguments(Utility.clone(st), true),
+                arguments(cloneSeminarTopicAndModify("seminar"), false),
+                arguments(cloneSeminarTopicAndModify("seminarTopicID"), false),
+                arguments(cloneSeminarTopicAndModify("name"), true),
+                arguments(cloneSeminarTopicAndModify("presenter"), true)
+        );
     }
 
     @Test
     void test_equalsAll_sameObject() {
-        assertTrue(seminarTopic.equalsAll(seminarTopic));
+        assertTrue(st.equalsAll(st));
     }
 
     @Test
     void test_equalsAll_null() {
-        assertFalse(seminarTopic.equalsAll(null));
+        assertFalse(st.equalsAll(null));
     }
 
     @Test
     void test_equalsAll_differentClass() {
-        assertFalse(seminarTopic.equalsAll(new Exception()));
+        assertFalse(st.equalsAll(new Exception()));
     }
 
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        seminarIDString + "," + IDString + "," + name + "," + presenter + ",true",
-        //all equal but seminar
-        seminarIDStringOther + "," + IDString + "," + name + "," + presenter + ",false",
-        //all equal but seminarTopicID
-        seminarIDString + "," + IDStringOther + "," + name + "," + presenter + ",false",
-        //all equal but name
-        seminarIDString + "," + IDString + "," + nameOther + "," + presenter + ",false",
-        //all equal but description
-        seminarIDString + "," + IDString + "," + name + "," + presenterOther + ",false"
-    })
-    void test_equalsAll(int seminarID2, int ID2, String name2, String presenter2,
-            boolean result) {
+    @MethodSource("equalsAllProvider")
+    void test_equalsAll(SeminarTopic stOther, boolean result) {
+        assertEquals(result, st.equalsAll(stOther));
+    }
 
-        Seminar s2 = new Seminar();
-        s2.setSeminarID(seminarID2);
-        SeminarTopic seminarTopicOther = new SeminarTopic(s2, ID2, name2, presenter2);
-
-        assertEquals(result,
-                seminarTopic.equalsAll(seminarTopicOther));
+    static Stream<Arguments> equalsAllProvider() throws IOException, ClassNotFoundException {
+        initializeSeminarTopics();
+        return Stream.of(
+                arguments(Utility.clone(st), true),
+                arguments(cloneSeminarTopicAndModify("seminar"), false),
+                arguments(cloneSeminarTopicAndModify("seminarTopicID"), false),
+                arguments(cloneSeminarTopicAndModify("name"), false),
+                arguments(cloneSeminarTopicAndModify("presenter"), false)
+        );
     }
 
     @ParameterizedTest
-    @MethodSource("seminarTopicStaticEqualsAllsProvider")
-    void test_staticEqualsAll(List<SeminarTopic> st, List<SeminarTopic> stOther, boolean result) {
-        assertEquals(result, SeminarTopic.equalsAll(st, stOther));
+    @MethodSource("staticEqualsAllsProvider")
+    void test_staticEqualsAll(List<SeminarTopic> seminarTopicsOther, boolean result) {
+        assertEquals(result, SeminarTopic.equalsAll(seminarTopics, seminarTopicsOther));
     }
 
-    static Stream<Arguments> seminarTopicStaticEqualsAllsProvider() {
-        try {
-            Seminar seminar2 = new Seminar();
-            seminar2.setSeminarID(seminarIDOther);
+    /*
+    Cases checked:
+    -> all equal
+    -> sizes differ - other is larger
+    -> sizes differ - other is smaller
+    -> all equal but seminar
+    -> all equal but seminarTopicID
+    -> all equal but name
+    -> all equal but presenter
+     */
+    static Stream<Arguments> staticEqualsAllsProvider() throws IOException, ClassNotFoundException {
+        initializeSeminarTopics();
+        return Stream.of(
+                arguments(Utility.clone(seminarTopics), true),
+                arguments(cloneSeminarTopicsListAndModify("larger"), false),
+                arguments(cloneSeminarTopicsListAndModify("smaller"), false),
+                arguments(cloneSeminarTopicsListAndModify("seminar"), false),
+                arguments(cloneSeminarTopicsListAndModify("seminarTopicID"), false),
+                arguments(cloneSeminarTopicsListAndModify("name"), false),
+                arguments(cloneSeminarTopicsListAndModify("presenter"), false)
+        );
+    }
 
-            //all equal
-            List<SeminarTopic> st2_equal = Utility.clone(seminarTopics);
+    public static SeminarTopic cloneSeminarTopicAndModify(String attribute) throws IOException, ClassNotFoundException {
+        SeminarTopic modifiedSt = Utility.clone(st);
 
-            //sizes differ - other is larger
-            List<SeminarTopic> st2_dSize_otherLarger = Utility.clone(seminarTopics);
-            SeminarTopic st = new SeminarTopic();
-            st2_dSize_otherLarger.add(st);
-
-            //sizes differ - other is smaller
-            List<SeminarTopic> st2_dSize_otherSmaller = Utility.clone(seminarTopics);
-            st2_dSize_otherSmaller.remove(0);
-
-            //all equal but seminar
-            List<SeminarTopic> st2_dSeminar = Utility.clone(seminarTopics);
-            st2_dSeminar.get(0).setSeminar(seminar2);
-
-            //all equal but seminarTopicID
-            List<SeminarTopic> st2_dSeminarTopicID = Utility.clone(seminarTopics);
-            st2_dSeminarTopicID.get(0).setSeminarTopicID(IDOther);
-
-            //all equal but name
-            List<SeminarTopic> st2_dName = Utility.clone(seminarTopics);
-            st2_dName.get(0).setName(nameOther);
-
-            //all equal but presenter
-            List<SeminarTopic> st2_dPresenter = Utility.clone(seminarTopics);
-            st2_dPresenter.get(0).setPresenter(presenterOther);
-
-            return Stream.of(
-                    arguments(seminarTopics, st2_equal, true),
-                    arguments(seminarTopics, st2_dSize_otherLarger, false),
-                    arguments(seminarTopics, st2_dSize_otherSmaller, false),
-                    arguments(seminarTopics, st2_dSeminar, false),
-                    arguments(seminarTopics, st2_dSeminarTopicID, false),
-                    arguments(seminarTopics, st2_dName, false),
-                    arguments(seminarTopics, st2_dPresenter, false)
-            );
-        } catch (Exception ex) {
-            Logger.getLogger(SeminarTopicTest.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+        switch (attribute) {
+            case "seminar" ->
+                modifiedSt.setSeminar(seminarOther);
+            case "seminarTopicID" ->
+                modifiedSt.setSeminarTopicID(IDOther);
+            case "name" ->
+                modifiedSt.setName(nameOther);
+            case "presenter" ->
+                modifiedSt.setPresenter(presenterOther);
+            default ->
+                throw new AssertionError();
         }
+        return modifiedSt;
+    }
+
+    public static List<SeminarTopic> cloneSeminarTopicsListAndModify(String attribute) throws IOException, ClassNotFoundException {
+        List<SeminarTopic> modifiedSeminarTopics = Utility.clone(seminarTopics);
+
+        switch (attribute) {
+            case "larger" ->
+                modifiedSeminarTopics.add(new SeminarTopic());
+            case "smaller" ->
+                modifiedSeminarTopics.remove(0);
+            case "seminar" ->
+                modifiedSeminarTopics.get(0).setSeminar(seminarOther);
+            case "seminarTopicID" ->
+                modifiedSeminarTopics.get(0).setSeminarTopicID(IDOther);
+            case "name" ->
+                modifiedSeminarTopics.get(0).setName(nameOther);
+            case "presenter" ->
+                modifiedSeminarTopics.get(0).setPresenter(presenterOther);
+            default ->
+                throw new AssertionError();
+        }
+        return modifiedSeminarTopics;
     }
 
     @Test
     void test_toString() {
-        String seminarTopicString = seminarTopic.toString();
-        assertTrue(seminarTopicString.contains(seminar.getSeminarID() + ""));
-        assertTrue(seminarTopicString.contains(ID + ""));
-        assertTrue(seminarTopicString.contains(name));
-        assertTrue(seminarTopicString.contains(presenter));
+        String seminarTopicString = st.toString();
+        assertTrue(seminarTopicString.contains(st.getSeminar().getSeminarID() + ""));
+        assertTrue(seminarTopicString.contains(st.getSeminarTopicID() + ""));
+        assertTrue(seminarTopicString.contains(st.getName()));
+        assertTrue(seminarTopicString.contains(st.getPresenter()));
         assertTrue(seminarTopicString.contains(State.UNCHANGED.toString()));
     }
 }

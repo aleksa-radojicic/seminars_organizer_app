@@ -1,0 +1,35 @@
+[
+  {
+    "seminar": {
+      "seminarID": 1,
+      "seminarTopics": [],
+      "state": "UNCHANGED"
+    },
+    "seminarTopicID": 1,
+    "name": "st1",
+    "presenter": "st name 1",
+    "state": "UNCHANGED"
+  },
+  {
+    "seminar": {
+      "seminarID": 1,
+      "seminarTopics": [],
+      "state": "UNCHANGED"
+    },
+    "seminarTopicID": 2,
+    "name": "st2",
+    "presenter": "st name 2",
+    "state": "UNCHANGED"
+  },
+  {
+    "seminar": {
+      "seminarID": 1,
+      "seminarTopics": [],
+      "state": "UNCHANGED"
+    },
+    "seminarTopicID": 3,
+    "name": "st3",
+    "presenter": "st name 3",
+    "state": "UNCHANGED"
+  }
+]

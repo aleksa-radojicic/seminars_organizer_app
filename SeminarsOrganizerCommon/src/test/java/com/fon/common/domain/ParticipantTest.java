@@ -63,6 +63,7 @@ public class ParticipantTest extends GenericEntityTest {
     @AfterEach
     void tearDown() {
         participant = null;
+        genericEntity = null;
     }
 
     @Test
