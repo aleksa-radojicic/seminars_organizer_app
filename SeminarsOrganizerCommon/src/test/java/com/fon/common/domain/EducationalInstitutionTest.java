@@ -4,11 +4,14 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,20 +32,23 @@ import static org.mockito.Mockito.when;
  */
 public class EducationalInstitutionTest extends GenericEntityTest {
 
-    private EducationalInstitution educationalInstitution;
-    private final int ID = 1;
-    private final String IDString = ID + "";
-    private final String name = "fon";
-    private final String address = "jove ilica 154";
+    private static EducationalInstitution educationalInstitution;
 
-    private final int IDOther = 2;
-    private final String IDStringOther = IDOther + "";
-    private final String nameOther = "etf";
-    private final String addressOther = "bulevara kralja aleksandra 73";
+    private static int IDOther;
+    private static String nameOther;
+    private static String addressOther;
+
+    private static void initializeEducationalInstitution() {
+        educationalInstitution = (EducationalInstitution) IOJson.deserializeJson("educational_institution", EducationalInstitution.class);
+
+        IDOther = educationalInstitution.getEducationalInstitutionID() + 1;
+        nameOther = educationalInstitution.getName() + Utility.STRING_OTHER;
+        addressOther = educationalInstitution.getAddress() + Utility.STRING_OTHER;
+    }
 
     @BeforeEach
     void setUp() {
-        educationalInstitution = new EducationalInstitution(ID, name, address);
+        initializeEducationalInstitution();
         genericEntity = educationalInstitution;
     }
 
@@ -57,7 +65,9 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     @Test
     void test_getAttributeValues() {
         super.test_getAttributeValues(String.format("%d, '%s', '%s'",
-                ID, name, address));
+                educationalInstitution.getEducationalInstitutionID(),
+                educationalInstitution.getName(),
+                educationalInstitution.getAddress()));
     }
 
     @Test
@@ -78,7 +88,9 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     @Test
     void test_setAttributeValues() {
         super.test_setAttributeValues(String.format("educationalInstitutionID = %d, name = '%s', address = '%s'",
-                ID, name, address));
+                educationalInstitution.getEducationalInstitutionID(),
+                educationalInstitution.getName(),
+                educationalInstitution.getAddress()));
     }
 
     @Test
@@ -91,14 +103,14 @@ public class EducationalInstitutionTest extends GenericEntityTest {
         try {
             ResultSet rs = mock(ResultSet.class);
 
-            when(rs.getInt("educationalInstitutionID")).thenReturn(ID);
-            when(rs.getString("name")).thenReturn(name);
-            when(rs.getString("address")).thenReturn(address);
+            when(rs.getInt("educationalInstitutionID")).thenReturn(educationalInstitution.getEducationalInstitutionID());
+            when(rs.getString("name")).thenReturn(educationalInstitution.getName());
+            when(rs.getString("address")).thenReturn(educationalInstitution.getAddress());
 
-            EducationalInstitution educationalInstitutionFromRS = (EducationalInstitution) educationalInstitution.getEntityFromResultSet(rs);
-            assertEquals(ID, educationalInstitutionFromRS.getEducationalInstitutionID());
-            assertEquals(name, educationalInstitutionFromRS.getName());
-            assertEquals(address, educationalInstitutionFromRS.getAddress());
+            EducationalInstitution eiFromRS = (EducationalInstitution) educationalInstitution.getEntityFromResultSet(rs);
+            assertEquals(educationalInstitution.getEducationalInstitutionID(), eiFromRS.getEducationalInstitutionID());
+            assertEquals(educationalInstitution.getName(), eiFromRS.getName());
+            assertEquals(educationalInstitution.getAddress(), eiFromRS.getAddress());
         } catch (SQLException ex) {
             Logger.getLogger(EducationalInstitutionTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
@@ -107,7 +119,7 @@ public class EducationalInstitutionTest extends GenericEntityTest {
 
     @Test
     void test_getQueryCondition() {
-        super.test_getQueryCondition(String.format("educationalInstitutionID = %d ", ID));
+        super.test_getQueryCondition(String.format("educationalInstitutionID = %d ", educationalInstitution.getEducationalInstitutionID()));
     }
 
     @Test
@@ -118,14 +130,14 @@ public class EducationalInstitutionTest extends GenericEntityTest {
     //tests for class specific methods
     @Test
     void test_setEducationalInstitutionID() {
-        educationalInstitution.setEducationalInstitutionID(ID);
-        assertEquals(educationalInstitution.getEducationalInstitutionID(), ID);
+        educationalInstitution.setEducationalInstitutionID(IDOther);
+        assertEquals(educationalInstitution.getEducationalInstitutionID(), IDOther);
     }
 
     @Test
     void test_setName() {
-        educationalInstitution.setName(name);
-        assertEquals(educationalInstitution.getName(), name);
+        educationalInstitution.setName(nameOther);
+        assertEquals(educationalInstitution.getName(), nameOther);
     }
 
     @Test
@@ -148,8 +160,8 @@ public class EducationalInstitutionTest extends GenericEntityTest {
 
     @Test
     void test_setAddress() {
-        educationalInstitution.setAddress(address);
-        assertEquals(educationalInstitution.getAddress(), address);
+        educationalInstitution.setAddress(addressOther);
+        assertEquals(educationalInstitution.getAddress(), addressOther);
     }
 
     @Test
@@ -185,30 +197,49 @@ public class EducationalInstitutionTest extends GenericEntityTest {
         assertFalse(educationalInstitution.equals(new Exception()));
     }
 
+    /*
+    Cases checked:
+    -> all equal
+    -> all equal but educationalInstitutionID
+    -> all equal but name
+    -> all equal but address
+     */
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        IDString + "," + name + "," + address + ",true",
-        //all equal but educationalInstitutionID
-        IDStringOther + "," + name + "," + address + ",false",
-        //all equal but name
-        IDString + "," + nameOther + "," + address + ",true",
-        //all equal but address
-        IDString + "," + name + "," + addressOther + ",true"
-    })
-    void test_equals(int ID2, String name2, String address2,
-            boolean result) {
+    @MethodSource("equalsProvider")
+    void test_equals(EducationalInstitution eiOther, boolean result) {
+        assertEquals(result, educationalInstitution.equals(eiOther));
+    }
 
-        EducationalInstitution educationalInstitutionOther = new EducationalInstitution(ID2, name2, address2);
+    static Stream<Arguments> equalsProvider() throws Exception {
+        initializeEducationalInstitution();
+        return Stream.of(
+                arguments(Utility.clone(educationalInstitution), true),
+                arguments(cloneEducationalInstitutionAndModify("educationalInstitutionID"), false),
+                arguments(cloneEducationalInstitutionAndModify("name"), true),
+                arguments(cloneEducationalInstitutionAndModify("address"), true)
+        );
+    }
 
-        assertEquals(result,
-                educationalInstitution.equals(educationalInstitutionOther));
+    public static EducationalInstitution cloneEducationalInstitutionAndModify(String attribute) throws IOException, ClassNotFoundException {
+        EducationalInstitution modifiedEi = Utility.clone(educationalInstitution);
+
+        switch (attribute) {
+            case "educationalInstitutionID" ->
+                modifiedEi.setEducationalInstitutionID(IDOther);
+            case "name" ->
+                modifiedEi.setName(nameOther);
+            case "address" ->
+                modifiedEi.setAddress(addressOther);
+            default ->
+                throw new AssertionError();
+        }
+        return modifiedEi;
     }
 
     @Test
     void test_toString() {
         String educationalInstitutionString = educationalInstitution.toString();
-        assertTrue(educationalInstitutionString.contains(name));
-        assertTrue(educationalInstitutionString.contains(address));
+        assertTrue(educationalInstitutionString.contains(educationalInstitution.getName()));
+        assertTrue(educationalInstitutionString.contains(educationalInstitution.getAddress()));
     }
 }
