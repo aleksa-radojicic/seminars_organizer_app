@@ -4,6 +4,7 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,9 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.io.IOException;
 
 /**
  *
@@ -29,30 +34,29 @@ import static org.mockito.Mockito.when;
  */
 public class ParticipantTest extends GenericEntityTest {
 
-    private Participant participant;
-    private final int ID = 1;
-    private final String IDString = ID + "";
-    private final String name = "name";
-    private final String surname = "surname";
-    private final Sex sex = Sex.MALE;
-    private final String sexString = "MALE";
-    private Date dateBirth;
-    private final String dateBirthString = "01.01.1980";
-    private final Admin createdByAdmin = new Admin();
-    private final String createdByAdminIDString = "1";
+    private static Participant participant;
 
-    private final int IDOther = 2;
-    private final String IDStringOther = IDOther + "";
-    private final String nameOther = "nameOther";
-    private final String surnameOther = "surnameOther";
-    private final String sexStringOther = "FEMALE";
-    private final String dateBirthStringOther = "02.02.1999";
-    private final String createdByAdminIDStringOther = "2";
+    private static int participantIDOther;
+    private static String nameOther;
+    private static String surnameOther;
+    private static Sex sexOther;
+    private static Date dateBirthOther;
+    private static Admin createdByAdminOther;
+
+    public static void initializeParticipant() throws ParseException {
+        participant = (Participant) IOJson.deserializeJson("participant", Participant.class);
+
+        participantIDOther = participant.getParticipantID() + 1;
+        nameOther = participant.getName() + Utility.STRING_OTHER;
+        surnameOther = participant.getSurname() + Utility.STRING_OTHER;
+        sexOther = Sex.FEMALE;
+        dateBirthOther = Utility.DATE_FORMAT.parse("30.06.2002");
+        createdByAdminOther = new Admin(participant.getCreatedByAdmin().getAdminID() + 1);
+    }
 
     @BeforeEach
     void setUp() throws ParseException {
-        dateBirth = Utility.DATE_FORMAT.parse(dateBirthString);
-        participant = new Participant(ID, name, surname, sex, dateBirth, createdByAdmin);
+        initializeParticipant();
         genericEntity = participant;
     }
 
@@ -69,7 +73,12 @@ public class ParticipantTest extends GenericEntityTest {
     @Test
     void test_getAttributeValues() {
         super.test_getAttributeValues(String.format("%d, '%s', '%s', '%s', '%s', %d",
-                ID, name, surname, sex, new java.sql.Date(dateBirth.getTime()).toString(), createdByAdmin.getAdminID()));
+                participant.getParticipantID(),
+                participant.getName(),
+                participant.getSurname(),
+                participant.getSex().toString(),
+                new java.sql.Date(participant.getDateBirth().getTime()).toString(),
+                participant.getCreatedByAdmin().getAdminID()));
     }
 
     @Test
@@ -97,27 +106,29 @@ public class ParticipantTest extends GenericEntityTest {
         try {
             ResultSet rs = mock(ResultSet.class);
 
-            when(rs.getInt("participantID")).thenReturn(ID);
-            when(rs.getString("name")).thenReturn(name);
-            when(rs.getString("surname")).thenReturn(surname);
-            when(rs.getString("sex")).thenReturn(sex.toString());
-            when(rs.getDate("dateBirth")).thenReturn(new java.sql.Date(dateBirth.getTime()));
+            when(rs.getInt("participantID")).thenReturn(participant.getParticipantID());
+            when(rs.getString("name")).thenReturn(participant.getName());
+            when(rs.getString("surname")).thenReturn(participant.getSurname());
+            when(rs.getString("sex")).thenReturn(participant.getSex().toString());
+            when(rs.getDate("dateBirth")).thenReturn(new java.sql.Date(participant.getDateBirth().getTime()));
 
             Participant participantFromRS = (Participant) participant.getEntityFromResultSet(rs);
-            assertEquals(ID, participantFromRS.getParticipantID());
-            assertEquals(name, participantFromRS.getName());
-            assertEquals(surname, participantFromRS.getSurname());
-            assertEquals(sex, participantFromRS.getSex());
-            assertEquals(dateBirth, participantFromRS.getDateBirth());
+            assertEquals(participant.getParticipantID(), participantFromRS.getParticipantID());
+            assertEquals(participant.getName(), participantFromRS.getName());
+            assertEquals(participant.getSurname(), participantFromRS.getSurname());
+            assertEquals(participant.getSex(), participantFromRS.getSex());
+            assertEquals(participant.getDateBirth(), participantFromRS.getDateBirth());
+
         } catch (SQLException ex) {
-            Logger.getLogger(ParticipantTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ParticipantTest.class
+                    .getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
     }
 
     @Test
     void test_getQueryCondition() {
-        super.test_getQueryCondition(String.format("participantID = %d ", ID));
+        super.test_getQueryCondition(String.format("participantID = %d ", participant.getParticipantID()));
     }
 
     @Test
@@ -128,14 +139,14 @@ public class ParticipantTest extends GenericEntityTest {
     //tests for class specific methods
     @Test
     void test_setParticipantID() {
-        participant.setParticipantID(ID);
-        assertEquals(participant.getParticipantID(), ID);
+        participant.setParticipantID(participantIDOther);
+        assertEquals(participant.getParticipantID(), participantIDOther);
     }
 
     @Test
     void test_setName() {
-        participant.setName(name);
-        assertEquals(participant.getName(), name);
+        participant.setName(nameOther);
+        assertEquals(participant.getName(), nameOther);
     }
 
     @Test
@@ -145,6 +156,7 @@ public class ParticipantTest extends GenericEntityTest {
     }
 
     @Test
+
     void test_setName_empty() {
         assertThrowsExactly(IllegalArgumentException.class,
                 () -> participant.setName(Utility.STRING_EMPTY));
@@ -159,8 +171,8 @@ public class ParticipantTest extends GenericEntityTest {
 
     @Test
     void test_setSurname() {
-        participant.setSurname(surname);
-        assertEquals(participant.getSurname(), surname);
+        participant.setSurname(surnameOther);
+        assertEquals(participant.getSurname(), surnameOther);
     }
 
     @Test
@@ -170,6 +182,7 @@ public class ParticipantTest extends GenericEntityTest {
     }
 
     @Test
+
     void test_setSurname_empty() {
         assertThrowsExactly(IllegalArgumentException.class,
                 () -> participant.setSurname(Utility.STRING_EMPTY));
@@ -184,14 +197,14 @@ public class ParticipantTest extends GenericEntityTest {
 
     @Test
     void test_setSex() {
-        participant.setSex(sex);
-        assertEquals(participant.getSex(), sex);
+        participant.setSex(sexOther);
+        assertEquals(participant.getSex(), sexOther);
     }
 
     @Test
     void test_setDateBirth() {
-        participant.setDateBirth(dateBirth);
-        assertEquals(participant.getDateBirth(), dateBirth);
+        participant.setDateBirth(dateBirthOther);
+        assertEquals(participant.getDateBirth(), dateBirthOther);
     }
 
     @Test
@@ -208,10 +221,10 @@ public class ParticipantTest extends GenericEntityTest {
 
     @Test
     void test_setCreatedByAdmin() {
-        participant.setCreatedByAdmin(createdByAdmin);
-        assertEquals(participant.getCreatedByAdmin(), createdByAdmin);
+        participant.setCreatedByAdmin(createdByAdminOther);
+        assertEquals(participant.getCreatedByAdmin(), createdByAdminOther);
     }
-    
+
     @Test
     void test_setCreatedByAdmin_null() {
         assertThrowsExactly(NullPointerException.class,
@@ -233,46 +246,62 @@ public class ParticipantTest extends GenericEntityTest {
         assertFalse(participant.equals(new Exception()));
     }
 
+    /*
+    Cases checked:
+    -> all equal
+    -> all equal but participantID
+    -> all equal but name
+    -> all equal but surname
+    -> all equal but sex
+    -> all equal but dateBirth  
+    -> all equal but createdByAdminID  
+     */
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        IDString + "," + name + "," + surname + "," + sexString + "," + dateBirthString + "," + createdByAdminIDString + ",true",
-        //all equal but educationalInstitutionID
-        IDStringOther + "," + name + "," + surname + "," + sexString + "," + dateBirthString + "," + createdByAdminIDString + ",false",
-        //all equal but name
-        IDString + "," + nameOther + "," + surname + "," + sexString + "," + dateBirthString + "," + createdByAdminIDString + ",true",
-        //all equal but surname
-        IDString + "," + name + "," + surnameOther + "," + sexString + "," + dateBirthString + "," + createdByAdminIDString + ",true",
-        //all equal but sex
-        IDString + "," + name + "," + surname + "," + sexStringOther + "," + dateBirthString + "," + createdByAdminIDString + ",true",
-        //all equal but dateBirth
-        IDString + "," + name + "," + surname + "," + sexString + "," + dateBirthStringOther + "," + createdByAdminIDString + ",true",
-        //all equal but createdByAdminID
-        IDString + "," + name + "," + surname + "," + sexString + "," + dateBirthString + "," + createdByAdminIDStringOther + ",true"
-    })
-    void test_equals(int ID2, String name2, String surname2, String sex2, String dateBirth2, String createdByAdminID2,
-            boolean result) {
+    @MethodSource("equalsProvider")
+    void test_equals(Participant pOther, boolean result) {
+        assertEquals(result, participant.equals(pOther));
+    }
 
-        try {
-            Admin admin2 = new Admin();
-            admin2.setAdminID(Integer.parseInt(createdByAdminID2));
+    static Stream<Arguments> equalsProvider() throws Exception {
+        initializeParticipant();
+        return Stream.of(
+                arguments(Utility.clone(participant), true),
+                arguments(cloneParticipantAndModify("participantID"), false),
+                arguments(cloneParticipantAndModify("name"), true),
+                arguments(cloneParticipantAndModify("surname"), true),
+                arguments(cloneParticipantAndModify("sex"), true),
+                arguments(cloneParticipantAndModify("dateBirth"), true),
+                arguments(cloneParticipantAndModify("createdByAdminID"), true)
+        );
+    }
 
-            Participant participantOther = new Participant(ID2, name2, surname2, Sex.valueOf(sex2),
-                    Utility.DATE_FORMAT.parse(dateBirth2), admin2);
+    public static Participant cloneParticipantAndModify(String attribute) throws IOException, ClassNotFoundException, ParseException {
+        Participant modifiedParticipant = Utility.clone(participant);
 
-            assertEquals(result,
-                    participant.equals(participantOther));
-        } catch (ParseException ex) {
-            Logger.getLogger(ParticipantTest.class.getName()).log(Level.SEVERE, null, ex);
-            throw new AssertionError(ex.getMessage());
+        switch (attribute) {
+            case "participantID" ->
+                modifiedParticipant.setParticipantID(participantIDOther);
+            case "name" ->
+                modifiedParticipant.setName(nameOther);
+            case "surname" ->
+                modifiedParticipant.setSurname(surnameOther);
+            case "sex" ->
+                modifiedParticipant.setSex(sexOther);
+            case "dateBirth" ->
+                modifiedParticipant.setDateBirth(dateBirthOther);
+            case "createdByAdminID" ->
+                modifiedParticipant.setCreatedByAdmin(createdByAdminOther);
+            default ->
+                throw new AssertionError();
         }
+        return modifiedParticipant;
     }
 
     @Test
     void test_toString() {
         String participantString = participant.toString();
-        assertTrue(participantString.contains(name));
-        assertTrue(participantString.contains(surname));
+        assertTrue(participantString.contains(participant.getName()));
+        assertTrue(participantString.contains(participant.getSurname()));
         assertTrue(participantString.contains("м, ") || participantString.contains("ж, "));
         assertTrue(participantString.contains(participant.getAge().toString()));
     }
