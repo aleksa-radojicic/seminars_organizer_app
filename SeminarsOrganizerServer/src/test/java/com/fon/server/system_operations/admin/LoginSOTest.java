@@ -6,6 +6,7 @@ package com.fon.server.system_operations.admin;
 
 import com.fon.common.domain.Admin;
 import com.fon.common.exceptions.LoginException;
+import com.fon.common.utils.IOJson;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,18 +27,12 @@ public class LoginSOTest {
     private LoginSO loginSO;
     private Admin admin;
 
-    private final int adminID = 1;
-    private final String username = "aleksar";
-    private final String password = "a";
-
     private Admin loggedAdmin;
 
     @BeforeEach
     void setUp() {
         loginSO = new LoginSO();
-        final String name = "aleksa";
-        final String surname = "radojicic";
-        admin = new Admin(adminID, username, password, name, surname);
+        admin = (Admin) IOJson.deserializeJson("admin", Admin.class);
         loggedAdmin = admin;
     }
 
@@ -45,12 +40,13 @@ public class LoginSOTest {
     void tearDown() {
         loginSO = null;
         admin = null;
+        loggedAdmin = null;
     }
 
     @Test
     void test_setLoggedAdmin() {
-        loggedAdmin.setAdminID(adminID);
-        assertEquals(loggedAdmin.getAdminID(), adminID);
+        loggedAdmin.setAdminID(admin.getAdminID());
+        assertEquals(loggedAdmin.getAdminID(), admin.getAdminID());
     }
 
     @Test
@@ -89,7 +85,7 @@ public class LoginSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation_wrongCredentials_username() {
         try {
-            admin.setUsername(username + "Other");
+            admin.setUsername(admin.getUsername()+ "Other");
             assertThrowsExactly(LoginException.class,
                     () -> loginSO.execute(admin));
 
@@ -104,7 +100,7 @@ public class LoginSOTest {
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void test_executeOperation_wrongCredentials_password() {
         try {
-            admin.setPassword(password + "Other");
+            admin.setPassword(admin.getPassword() + "Other");
             assertThrowsExactly(LoginException.class,
                     () -> loginSO.execute(admin));
 

@@ -4,10 +4,11 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,41 +35,36 @@ import static org.mockito.Mockito.when;
  */
 public class SeminarEnrollmentTest extends GenericEntityTest {
 
-    private static SeminarEnrollment seminarEnrollment;
-
-    private static final SeminarSchedule seminarSchedule = new SeminarSchedule();
-    private static final int seminarScheduleID = 1;
-    private static final String seminarScheduleIDString = "1";
-    private static final Participant participant = new Participant();
-    private static final int participantID = 1;
-    private static final String participantIDString = "1";
-    private static final String notes = "notes";
+    private static SeminarEnrollment se;
 
     private static List<SeminarEnrollment> seminarEnrollments;
 
-    private static int seminarScheduleIDOther = 2;
-    private static final String seminarScheduleIDStringOther = "2";
-    private static final int participantIDOther = 2;
-    private static final String participantIDStringOther = "2";
-    private static final String notesOther = "notesOther";
+    private static SeminarSchedule seminarScheduleOther;
+    private static Participant participantOther;
+    private static String notesOther;
+
+    private static void initializeSeminarEnrollment() {
+        //Get all seminar enrollments from JSON
+        SeminarEnrollment[] seminarEnrollmentsArray = (SeminarEnrollment[]) IOJson.deserializeJson("seminar_enrollments", SeminarEnrollment[].class);
+        seminarEnrollments = new LinkedList(Arrays.asList(seminarEnrollmentsArray));
+
+        se = seminarEnrollments.get(0);
+
+        seminarScheduleOther = new SeminarSchedule(se.getSeminarSchedule().getSeminarScheduleID() + 1);
+        participantOther = new Participant(se.getParticipant().getParticipantID() + 1);
+        notesOther = se.getNotes() + Utility.STRING_OTHER;
+    }
 
     @BeforeEach
     void setUp() {
-        seminarSchedule.setSeminarScheduleID(seminarScheduleID);
-        participant.setParticipantID(participantID);
-
-        SeminarEnrollment se11 = new SeminarEnrollment(new SeminarSchedule(11), new Participant(11), "notes11");
-        SeminarEnrollment se12 = new SeminarEnrollment(new SeminarSchedule(12), new Participant(12), "notes12");
-        SeminarEnrollment se13 = new SeminarEnrollment(new SeminarSchedule(13), new Participant(13), "notes13");
-        seminarEnrollments = new LinkedList(Arrays.asList(se11, se12, se13));
-
-        seminarEnrollment = new SeminarEnrollment(seminarSchedule, participant, notes);
-        genericEntity = seminarEnrollment;
+        initializeSeminarEnrollment();
+        genericEntity = se;
     }
 
     @AfterEach
     void tearDown() {
-        seminarEnrollment = null;
+        se = null;
+        genericEntity = null;
     }
 
     @Test
@@ -80,7 +75,9 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
     @Test
     void test_getAttributeValues() {
         super.test_getAttributeValues(String.format("%d, %d, '%s'",
-                seminarSchedule.getSeminarScheduleID(), participant.getParticipantID(), notes));
+                se.getSeminarSchedule().getSeminarScheduleID(),
+                se.getParticipant().getParticipantID(),
+                se.getNotes()));
     }
 
     @Test
@@ -111,27 +108,19 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
         try {
             ResultSet rs = mock(ResultSet.class);
 
-            String name = "name";
-            String surname = "surname";
-            String sex = "MALE";
-            java.sql.Date dateBirth = new java.sql.Date(Utility.DATE_FORMAT.parse("01.01.1980").getTime());
+            when(rs.getInt("participantID")).thenReturn(se.getParticipant().getParticipantID());
+            when(rs.getString("name")).thenReturn(se.getParticipant().getName());
+            when(rs.getString("surname")).thenReturn(se.getParticipant().getSurname());
+            when(rs.getString("sex")).thenReturn(se.getParticipant().getSex().toString());
+            when(rs.getDate("dateBirth")).thenReturn(new java.sql.Date(se.getParticipant().getDateBirth().getTime()));
+            when(rs.getString("notes")).thenReturn(se.getNotes());
 
-            when(rs.getInt("participantID")).thenReturn(participantID);
-            when(rs.getString("name")).thenReturn(name);
-            when(rs.getString("surname")).thenReturn(surname);
-            when(rs.getString("sex")).thenReturn(sex);
-            when(rs.getDate("dateBirth")).thenReturn(dateBirth);
-            when(rs.getString("notes")).thenReturn(notes);
+            SeminarEnrollment seFromRS = (SeminarEnrollment) se.getEntityFromResultSet(rs);
+            //Note: from db seminarSchedule is not returned and thus why seminarSchedule is added like this.
+            seFromRS.setSeminarSchedule(new SeminarSchedule(se.getSeminarSchedule().getSeminarScheduleID()));
 
-            SeminarEnrollment seminarEnrollmentFromRS = (SeminarEnrollment) seminarEnrollment.getEntityFromResultSet(rs);
-
-            assertEquals(participantID, seminarEnrollmentFromRS.getParticipant().getParticipantID());
-            assertEquals(name, seminarEnrollmentFromRS.getParticipant().getName());
-            assertEquals(surname, seminarEnrollmentFromRS.getParticipant().getSurname());
-            assertEquals(sex, seminarEnrollmentFromRS.getParticipant().getSex().toString());
-            assertEquals(dateBirth, seminarEnrollmentFromRS.getParticipant().getDateBirth());
-            assertEquals(notes, seminarEnrollmentFromRS.getNotes());
-        } catch (SQLException | ParseException ex) {
+            assertEquals(true, se.equalsAll(seFromRS));
+        } catch (SQLException ex) {
             Logger.getLogger(SeminarEnrollmentTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
         }
@@ -144,198 +133,202 @@ public class SeminarEnrollmentTest extends GenericEntityTest {
 
     @Test
     void test_getState() {
-        assertEquals(State.UNCHANGED, seminarEnrollment.getState());
+        assertEquals(State.UNCHANGED, se.getState());
     }
 
     //tests for class specific methods
     @Test
     void test_setSeminarSchedule() {
-        SeminarSchedule ss = new SeminarSchedule();
-        seminarEnrollment.setSeminarSchedule(ss);
-        assertEquals(seminarEnrollment.getSeminarSchedule(), ss);
+        se.setSeminarSchedule(seminarScheduleOther);
+        assertEquals(se.getSeminarSchedule(), seminarScheduleOther);
     }
 
     @Test
     void test_setSeminarSchedule_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarEnrollment.setSeminarSchedule(null));
+                () -> se.setSeminarSchedule(null));
     }
 
     @Test
     void test_setParticipant() {
-        Participant p = new Participant();
-        seminarEnrollment.setParticipant(p);
-        assertEquals(seminarEnrollment.getParticipant(), p);
+        se.setParticipant(participantOther);
+        assertEquals(se.getParticipant(), participantOther);
     }
 
     @Test
     void test_setParticipant_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarEnrollment.setParticipant(null));
+                () -> se.setParticipant(null));
     }
 
     @Test
     void test_setNotes() {
-        seminarEnrollment.setNotes(notes);
-        assertEquals(seminarEnrollment.getNotes(), notes);
+        se.setNotes(notesOther);
+        assertEquals(se.getNotes(), notesOther);
     }
 
     @Test
     void test_setNotes_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarEnrollment.setNotes(null));
+                () -> se.setNotes(null));
     }
 
     @Test
     void test_setNotes_tooLong() {
         assertThrowsExactly(IllegalArgumentException.class,
-                () -> seminarEnrollment.setNotes(Utility.STRING_101_LENGTH));
+                () -> se.setNotes(Utility.STRING_101_LENGTH));
     }
 
     @Test
     void test_setState() {
-        seminarEnrollment.setState(State.CREATED);
-        assertEquals(State.CREATED, seminarEnrollment.getState());
+        se.setState(State.CREATED);
+        assertEquals(State.CREATED, se.getState());
     }
 
     @Test
     void test_setState_null() {
         assertThrowsExactly(NullPointerException.class,
-                () -> seminarEnrollment.setState(null));
+                () -> se.setState(null));
     }
 
     @Test
     void test_equals_sameObject() {
-        assertTrue(seminarEnrollment.equals(seminarEnrollment));
+        assertTrue(se.equals(se));
     }
 
     @Test
     void test_equals_null() {
-        assertFalse(seminarEnrollment.equals(null));
+        assertFalse(se.equals(null));
     }
 
     @Test
     void test_equals_differentClass() {
-        assertFalse(seminarEnrollment.equals(new Exception()));
+        assertFalse(se.equals(new Exception()));
     }
 
+    /*
+    Cases checked:
+    -> all equal
+    -> all equal but seminarSchedule
+    -> all equal but participant
+    -> all equal but notes
+     */
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        seminarScheduleIDString + "," + participantIDString + "," + notes + ",true",
-        //all equal but seminarSchedule
-        seminarScheduleIDStringOther + "," + participantIDString + "," + notes + ",false",
-        //all equal but participant
-        seminarScheduleIDString + "," + participantIDStringOther + "," + notes + ",false",
-        //all equal but notes
-        seminarScheduleIDString + "," + participantIDString + "," + notesOther + ",true"
-    })
-    void test_equals(int seminarScheduleID2, int participantID2, String notes2,
-            boolean result) {
+    @MethodSource("equalsProvider")
+    void test_equals(SeminarEnrollment seOther, boolean result) {
+        assertEquals(result, se.equals(seOther));
+    }
 
-        SeminarSchedule ss2 = new SeminarSchedule();
-        ss2.setSeminarScheduleID(seminarScheduleID2);
-        Participant p2 = new Participant();
-        p2.setParticipantID(participantID2);
-
-        SeminarEnrollment seOther = new SeminarEnrollment(ss2, p2, notes2);
-
-        assertEquals(result,
-                seminarEnrollment.equals(seOther));
+    static Stream<Arguments> equalsProvider() throws Exception {
+        initializeSeminarEnrollment();
+        return Stream.of(
+                arguments(Utility.clone(se), true),
+                arguments(cloneSeminarEnrollmentAndModify("seminarSchedule"), false),
+                arguments(cloneSeminarEnrollmentAndModify("participant"), false),
+                arguments(cloneSeminarEnrollmentAndModify("notes"), true)
+        );
     }
 
     @Test
     void test_equalsAll_sameObject() {
-        assertTrue(seminarEnrollment.equalsAll(seminarEnrollment));
+        assertTrue(se.equalsAll(se));
     }
 
     @Test
     void test_equalsAll_null() {
-        assertFalse(seminarEnrollment.equalsAll(null));
+        assertFalse(se.equalsAll(null));
     }
 
     @Test
     void test_equalsAll_differentClass() {
-        assertFalse(seminarEnrollment.equalsAll(new Exception()));
+        assertFalse(se.equalsAll(new Exception()));
     }
 
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        seminarScheduleIDString + "," + participantIDString + "," + notes + ",true",
-        //all equal but seminarSchedule
-        seminarScheduleIDStringOther + "," + participantIDString + "," + notes + ",false",
-        //all equal but participant
-        seminarScheduleIDString + "," + participantIDStringOther + "," + notes + ",false",
-        //all equal but notes
-        seminarScheduleIDString + "," + participantIDString + "," + notesOther + ",false",})
-    void test_equalsAll(int seminarScheduleID2, int participantID2, String notes2,
-            boolean result) {
-
-        SeminarSchedule ss2 = new SeminarSchedule(seminarScheduleID2);
-        Participant p2 = new Participant(participantID2);
-
-        SeminarEnrollment seOther = new SeminarEnrollment(ss2, p2, notes2);
-
-        assertEquals(result,
-                seminarEnrollment.equalsAll(seOther));
+    @MethodSource("equalsAllProvider")
+    void test_equalsAll(SeminarEnrollment seOther, boolean result) {
+        assertEquals(result, se.equalsAll(seOther));
     }
 
-    @ParameterizedTest
-    @MethodSource("seminarEnrollmentStaticEqualsAllsProvider")
-    void test_staticEqualsAll(List<SeminarEnrollment> se, List<SeminarEnrollment> seOther, boolean result) {
-        assertEquals(result, SeminarEnrollment.equalsAll(se, seOther));
+    static Stream<Arguments> equalsAllProvider() throws Exception {
+        initializeSeminarEnrollment();
+        return Stream.of(
+                arguments(Utility.clone(se), true),
+                arguments(cloneSeminarEnrollmentAndModify("seminarSchedule"), false),
+                arguments(cloneSeminarEnrollmentAndModify("participant"), false),
+                arguments(cloneSeminarEnrollmentAndModify("notes"), false)
+        );
     }
 
-    static Stream<Arguments> seminarEnrollmentStaticEqualsAllsProvider() {
-        try {
-            SeminarSchedule ss2 = new SeminarSchedule(seminarScheduleIDOther);
-            Participant p2 = new Participant(participantIDOther);
+    public static SeminarEnrollment cloneSeminarEnrollmentAndModify(String attribute) throws IOException, ClassNotFoundException {
+        SeminarEnrollment modifiedSe = Utility.clone(se);
 
-            //all equal
-            List<SeminarEnrollment> se2_equal = Utility.getDeepCopy(seminarEnrollments);
-
-            //sizes differ - other is larger
-            List<SeminarEnrollment> se2_dSize_otherLarger = Utility.getDeepCopy(seminarEnrollments);
-            SeminarEnrollment se = new SeminarEnrollment(new SeminarSchedule(21), new Participant(21), "notes21");
-            se2_dSize_otherLarger.add(se);
-
-            //sizes differ - other is smaller
-            List<SeminarEnrollment> se2_dSize_otherSmaller = Utility.getDeepCopy(seminarEnrollments);
-            se2_dSize_otherSmaller.remove(0);
-
-            //all equal but seminarSchedule
-            List<SeminarEnrollment> se2_dSeminar = Utility.getDeepCopy(seminarEnrollments);
-            se2_dSeminar.get(0).setSeminarSchedule(ss2);
-
-            //all equal but participant
-            List<SeminarEnrollment> se2_dSeminarTopicID = Utility.getDeepCopy(seminarEnrollments);
-            se2_dSeminarTopicID.get(0).setParticipant(p2);
-
-            //all equal but notes
-            List<SeminarEnrollment> se2_dName = Utility.getDeepCopy(seminarEnrollments);
-            se2_dName.get(0).setNotes(notesOther);
-
-            return Stream.of(
-                    arguments(seminarEnrollments, se2_equal, true),
-                    arguments(seminarEnrollments, se2_dSize_otherLarger, false),
-                    arguments(seminarEnrollments, se2_dSize_otherSmaller, false),
-                    arguments(seminarEnrollments, se2_dSeminar, false),
-                    arguments(seminarEnrollments, se2_dSeminarTopicID, false),
-                    arguments(seminarEnrollments, se2_dName, false)
-            );
-        } catch (Exception ex) {
-            Logger.getLogger(SeminarEnrollmentTest.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+        switch (attribute) {
+            case "seminarSchedule" ->
+                modifiedSe.setSeminarSchedule(seminarScheduleOther);
+            case "participant" ->
+                modifiedSe.setParticipant(participantOther);
+            case "notes" ->
+                modifiedSe.setNotes(notesOther);
+            default ->
+                throw new AssertionError();
         }
+        return modifiedSe;
+    }
+
+    @ParameterizedTest
+    @MethodSource("staticEqualsAllProvider")
+    void test_staticEqualsAll(List<SeminarEnrollment> seminarEnrollmentsOther, boolean result) {
+        assertEquals(result, SeminarEnrollment.equalsAll(seminarEnrollments, seminarEnrollmentsOther));
+    }
+
+    /*
+    Cases checked:
+    -> all equal
+    -> sizes differ - other is larger
+    -> sizes differ - other is smaller
+    -> all equal but seminarSchedule
+    -> all equal but participant
+    -> all equal but notes
+     */
+    static Stream<Arguments> staticEqualsAllProvider() throws Exception {
+        initializeSeminarEnrollment();
+        return Stream.of(
+                arguments(Utility.clone(seminarEnrollments), true),
+                arguments(cloneSeminarEnrollmentsListAndModify("larger"), false),
+                arguments(cloneSeminarEnrollmentsListAndModify("smaller"), false),
+                arguments(cloneSeminarEnrollmentsListAndModify("seminarSchedule"), false),
+                arguments(cloneSeminarEnrollmentsListAndModify("participant"), false),
+                arguments(cloneSeminarEnrollmentsListAndModify("notes"), false)
+        );
+    }
+
+    public static List<SeminarEnrollment> cloneSeminarEnrollmentsListAndModify(String attribute) throws IOException, ClassNotFoundException {
+        List<SeminarEnrollment> modifiedSes = Utility.clone(seminarEnrollments);
+
+        switch (attribute) {
+            case "larger" ->
+                modifiedSes.add(new SeminarEnrollment(new SeminarSchedule(1), participantOther, notesOther));
+            case "smaller" ->
+                modifiedSes.remove(0);
+            case "seminarSchedule" ->
+                modifiedSes.get(0).setSeminarSchedule(seminarScheduleOther);
+            case "participant" ->
+                modifiedSes.get(0).setParticipant(participantOther);
+            case "notes" ->
+                modifiedSes.get(0).setNotes(notesOther);
+            default ->
+                throw new AssertionError();
+        }
+        return modifiedSes;
     }
 
     @Test
     void test_toString() {
-        String seminarEnrollmentString = seminarEnrollment.toString();
-        assertTrue(seminarEnrollmentString.contains(seminarSchedule.toString()));
-        assertTrue(seminarEnrollmentString.contains(participant.toString()));
-        assertTrue(seminarEnrollmentString.contains(notes));
+        String seminarEnrollmentString = se.toString();
+        assertTrue(seminarEnrollmentString.contains(se.getSeminarSchedule().toString()));
+        assertTrue(seminarEnrollmentString.contains(se.getParticipant().toString()));
+        assertTrue(seminarEnrollmentString.contains(se.getNotes()));
         assertTrue(seminarEnrollmentString.contains(State.UNCHANGED.toString()));
     }
 }

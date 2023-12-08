@@ -4,13 +4,11 @@
  */
 package com.fon.server.system_operations.participant;
 
-import com.fon.common.domain.Admin;
 import com.fon.common.domain.Participant;
-import com.fon.common.domain.Sex;
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
 import com.fon.server.repository.db.DbRepository;
 import com.fon.server.repository.db.impl.RepositoryDbGeneric;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,14 +35,9 @@ public class CreateParticipantSOTest {
     void setUp() {
         cpSO = new CreateParticipantSO();
 
-        final int participantID = 1000;
-        final String name = "testName";
-        final String surname = "testSurname";
-        Date dateBirth = new Date();
-        final int createdByAdminID = 2;
-        final Admin createdByAdmin = new Admin(createdByAdminID);
-        participant = new Participant(participantID, name, surname, Sex.MALE, dateBirth, createdByAdmin);
-
+        participant = (Participant) IOJson.deserializeJson("participant", Participant.class);
+        participant.setParticipantID(1001);
+        
         gpbidSO = new GetParticipantByIDSO();
     }
 
@@ -84,6 +77,7 @@ public class CreateParticipantSOTest {
 
             Participant pFromDb = gpbidSO.getElement();
 
+            //Should be asserted using equalsAll (doesn't exist yet)
             assertEquals(participant.getParticipantID(), pFromDb.getParticipantID());
             assertEquals(participant.getName(), pFromDb.getName());
             assertEquals(participant.getSurname(), pFromDb.getSurname());

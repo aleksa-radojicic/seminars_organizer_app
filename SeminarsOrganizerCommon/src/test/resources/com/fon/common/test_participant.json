@@ -1,0 +1,10 @@
+{
+  "participantID": 5,
+  "name": "Aleksa",
+  "surname": "Radojicic",
+  "sex": "MALE",
+  "dateBirth": "Mar 28, 2000, 12:00:00 AM",
+  "createdByAdmin": {
+    "adminID": 1
+  }
+}

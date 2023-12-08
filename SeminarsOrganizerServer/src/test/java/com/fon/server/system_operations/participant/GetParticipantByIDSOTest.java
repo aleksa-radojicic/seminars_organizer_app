@@ -4,12 +4,9 @@
  */
 package com.fon.server.system_operations.participant;
 
-import com.fon.common.domain.Admin;
 import com.fon.common.domain.Participant;
-import com.fon.common.domain.Sex;
-import com.fon.common.utils.Utility;
+import com.fon.common.utils.IOJson;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,23 +25,19 @@ import org.junit.jupiter.api.Timeout;
 public class GetParticipantByIDSOTest {
 
     private GetParticipantByIDSO gpbidSO;
-    private final int participantID = 5;
-    private final String name = "Aleksa";
-    private final String surname = "Radojicic";
-    private Date dateBirth;
-    private final int createdByAdminID = 1;
-    private final Admin createdByAdmin = new Admin(createdByAdminID);
-
-    private final int filterID = participantID;
+    private Participant participant;
+    private int filterID;
 
     @BeforeEach
     void setUp() throws ParseException {
-        dateBirth = Utility.DATE_FORMAT.parse("28.03.2000");
+        participant = (Participant) IOJson.deserializeJson("participant", Participant.class);
+        filterID = participant.getParticipantID();
         gpbidSO = new GetParticipantByIDSO();
     }
 
     @AfterEach
     void tearDown() {
+        participant = null;
         gpbidSO = null;
     }
 
@@ -86,11 +79,11 @@ public class GetParticipantByIDSOTest {
 
             Participant pOther = gpbidSO.getElement();
 
-            assertEquals(participantID, pOther.getParticipantID());
-            assertEquals(name, pOther.getName());
-            assertEquals(surname, pOther.getSurname());
-            assertEquals(Sex.MALE, pOther.getSex());
-            assertEquals(dateBirth, pOther.getDateBirth());
+            assertEquals(participant.getParticipantID(), pOther.getParticipantID());
+            assertEquals(participant.getName(), pOther.getName());
+            assertEquals(participant.getSurname(), pOther.getSurname());
+            assertEquals(participant.getSex(), pOther.getSex());
+            assertEquals(participant.getDateBirth(), pOther.getDateBirth());
             assertEquals(null, pOther.getCreatedByAdmin());
         } catch (Exception ex) {
             Logger.getLogger(GetParticipantByIDSOTest.class.getName()).log(Level.SEVERE, null, ex);

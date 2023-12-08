@@ -78,7 +78,7 @@ public class SeminarEnrollmentTableModel extends AbstractTableModel {
 
     public void setList(List<SeminarEnrollment> list) throws IOException, ClassNotFoundException {
         this.list = list;
-        this.listOriginal = Utility.getDeepCopy(this.list);
+        this.listOriginal = Utility.clone(this.list);
         fireTableDataChanged();
     }
 

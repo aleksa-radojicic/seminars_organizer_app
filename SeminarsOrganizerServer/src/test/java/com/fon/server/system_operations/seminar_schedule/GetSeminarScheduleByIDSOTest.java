@@ -4,16 +4,9 @@
  */
 package com.fon.server.system_operations.seminar_schedule;
 
-import com.fon.common.domain.EducationalInstitution;
-import com.fon.common.domain.Participant;
-import com.fon.common.domain.Seminar;
-import com.fon.common.domain.SeminarEnrollment;
 import com.fon.common.domain.SeminarSchedule;
-import com.fon.common.utils.Utility;
+import com.fon.common.utils.IOJson;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,34 +26,18 @@ public class GetSeminarScheduleByIDSOTest {
 
     private GetSeminarScheduleByIDSO gssbidSO;
     private SeminarSchedule seminarSchedule;
-
-    private List<SeminarEnrollment> seminarEnrollments;
-
     private int filterID;
 
     @BeforeEach
     void setUp() throws ParseException {
-        SeminarEnrollment se1 = new SeminarEnrollment(null, new Participant(1), "test");
-        SeminarEnrollment se2 = new SeminarEnrollment(null, new Participant(2), "");
-
-        seminarEnrollments = new LinkedList(List.of(se1, se2));
-
-        int seminarScheduleID = 1;
-        Date datetimeBegins = Utility.DATETIME_FORMAT.parse("01.02.2024 | 14:00");
-        Date datetimeEnds = Utility.DATETIME_FORMAT.parse("01.02.2024 | 16:15");
-        Seminar seminar = new Seminar(3, "MLOps: From zero to hero", "Embark on a journey from novice to expert in MLOps using latest solutions and practices", null, null);
-        EducationalInstitution educationalInstitution = new EducationalInstitution(3, "IT Centre", "Oakwood 23");
-        seminarSchedule = new SeminarSchedule(seminarScheduleID, datetimeBegins, datetimeEnds, null, seminar, educationalInstitution, seminarEnrollments);
-        seminarEnrollments.forEach(x -> x.setSeminarSchedule(seminarSchedule));
-
         gssbidSO = new GetSeminarScheduleByIDSO();
-
-        filterID = seminarScheduleID;
+        seminarSchedule = (SeminarSchedule) IOJson.deserializeJson("seminar_schedule", SeminarSchedule.class);
+        seminarSchedule.getSeminarEnrollments().forEach(x -> x.setSeminarSchedule(seminarSchedule));
+        filterID = seminarSchedule.getSeminarScheduleID();
     }
 
     @AfterEach
     void tearDown() {
-        seminarEnrollments = null;
         seminarSchedule = null;
         gssbidSO = null;
     }

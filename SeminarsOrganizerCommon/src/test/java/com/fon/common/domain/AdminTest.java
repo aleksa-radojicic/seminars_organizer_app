@@ -4,11 +4,14 @@
  */
 package com.fon.common.domain;
 
+import com.fon.common.utils.IOJson;
 import com.fon.common.utils.Utility;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -17,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,30 +32,33 @@ import static org.mockito.Mockito.when;
  */
 public class AdminTest extends GenericEntityTest {
 
-    private Admin admin;
-    private final int adminID = 1;
-    private final String adminIDString = adminID + "";
-    private final String username = "aleksar";
-    private final String password = "a";
-    private final String name = "aleksa";
-    private final String surname = "radojicic";
+    private static Admin admin;
 
-    private final int adminIDOther = 2;
-    private final String adminIDStringOther = adminIDOther + "";
-    private final String usernameOther = "username";
-    private final String passwordOther = "password";
-    private final String nameOther = "name";
-    private final String surnameOther = "surname";
+    private static int adminIDOther;
+    private static String usernameOther;
+    private static String passwordOther;
+    private static String nameOther;
+    private static String surnameOther;
+
+    public static void initializeParticipant() {
+        admin = (Admin) IOJson.deserializeJson("admin", Admin.class);
+        adminIDOther = admin.getAdminID() + 1;
+        usernameOther = admin.getUsername() + Utility.STRING_OTHER;
+        passwordOther = admin.getPassword() + Utility.STRING_OTHER;
+        nameOther = admin.getName() + Utility.STRING_OTHER;
+        surnameOther = admin.getSurname() + Utility.STRING_OTHER;
+    }
 
     @BeforeEach
     void setUp() {
-        admin = new Admin(adminID, username, password, name, surname);
+        initializeParticipant();
         genericEntity = admin;
     }
 
     @AfterEach
     void tearDown() {
         admin = null;
+        genericEntity = null;
     }
 
     @Test
@@ -61,7 +69,7 @@ public class AdminTest extends GenericEntityTest {
     @Test
     void test_getAttributeValues() {
         super.test_getAttributeValues(String.format("%d, '%s', '%s', '%s', '%s'",
-                adminID, username, password, name, surname));
+                admin.getAdminID(), admin.getUsername(), admin.getPassword(), admin.getName(), admin.getSurname()));
     }
 
     @Test
@@ -82,7 +90,7 @@ public class AdminTest extends GenericEntityTest {
     @Test
     void test_setAttributeValues() {
         super.test_setAttributeValues(String.format("adminID = %d, username = '%s', password = '%s', name = '%s', surname = '%s'",
-                adminID, username, password, name, surname));
+                admin.getAdminID(), admin.getUsername(), admin.getPassword(), admin.getName(), admin.getSurname()));
     }
 
     @Test
@@ -95,18 +103,19 @@ public class AdminTest extends GenericEntityTest {
         try {
             ResultSet rs = mock(ResultSet.class);
 
-            when(rs.getInt("adminID")).thenReturn(adminID);
-            when(rs.getString("username")).thenReturn(username);
-            when(rs.getString("password")).thenReturn(password);
-            when(rs.getString("name")).thenReturn(name);
-            when(rs.getString("surname")).thenReturn(surname);
+            when(rs.getInt("adminID")).thenReturn(admin.getAdminID());
+            when(rs.getString("username")).thenReturn(admin.getUsername());
+            when(rs.getString("password")).thenReturn(admin.getPassword());
+            when(rs.getString("name")).thenReturn(admin.getName());
+            when(rs.getString("surname")).thenReturn(admin.getSurname());
 
             Admin adminFromRs = (Admin) admin.getEntityFromResultSet(rs);
-            assertEquals(adminID, adminFromRs.getAdminID());
-            assertEquals(username, adminFromRs.getUsername());
-            assertEquals(password, adminFromRs.getPassword());
-            assertEquals(name, adminFromRs.getName());
-            assertEquals(surname, adminFromRs.getSurname());
+            //EqualsAll would be better
+            assertEquals(admin.getAdminID(), adminFromRs.getAdminID());
+            assertEquals(admin.getUsername(), adminFromRs.getUsername());
+            assertEquals(admin.getPassword(), adminFromRs.getPassword());
+            assertEquals(admin.getName(), adminFromRs.getName());
+            assertEquals(admin.getSurname(), adminFromRs.getSurname());
         } catch (SQLException ex) {
             Logger.getLogger(AdminTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new AssertionError(ex.getMessage());
@@ -115,7 +124,7 @@ public class AdminTest extends GenericEntityTest {
 
     @Test
     void test_getQueryCondition() {
-        super.test_getQueryCondition(String.format("adminID = %d ", adminID));
+        super.test_getQueryCondition(String.format("adminID = %d ", admin.getAdminID()));
     }
 
     @Test
@@ -126,14 +135,14 @@ public class AdminTest extends GenericEntityTest {
     //tests for class specific methods
     @Test
     void test_setAdminID() {
-        admin.setAdminID(adminID);
-        assertEquals(admin.getAdminID(), adminID);
+        admin.setAdminID(adminIDOther);
+        assertEquals(admin.getAdminID(), adminIDOther);
     }
 
     @Test
     void test_setUsername() {
-        admin.setUsername(username);
-        assertEquals(admin.getUsername(), username);
+        admin.setUsername(usernameOther);
+        assertEquals(admin.getUsername(), usernameOther);
     }
 
     @Test
@@ -156,8 +165,8 @@ public class AdminTest extends GenericEntityTest {
 
     @Test
     void test_setPassword() {
-        admin.setPassword(password);
-        assertEquals(admin.getPassword(), password);
+        admin.setPassword(passwordOther);
+        assertEquals(admin.getPassword(), passwordOther);
     }
 
     @Test
@@ -180,8 +189,8 @@ public class AdminTest extends GenericEntityTest {
 
     @Test
     void test_setName() {
-        admin.setName(name);
-        assertEquals(admin.getName(), name);
+        admin.setName(nameOther);
+        assertEquals(admin.getName(), nameOther);
     }
 
     @Test
@@ -204,8 +213,8 @@ public class AdminTest extends GenericEntityTest {
 
     @Test
     void test_setSurname() {
-        admin.setSurname(surname);
-        assertEquals(admin.getSurname(), surname);
+        admin.setSurname(surnameOther);
+        assertEquals(admin.getSurname(), surnameOther);
     }
 
     @Test
@@ -241,43 +250,66 @@ public class AdminTest extends GenericEntityTest {
         assertFalse(admin.equals(new Exception()));
     }
 
+    /*
+    Cases checked:
+    -> all equal
+    -> all equal but adminID
+    -> all equal but username
+    -> all equal but password
+    -> all equal but name
+    -> all equal but surname  
+     */
     @ParameterizedTest
-    @CsvSource({
-        //all equal
-        adminIDString + "," + username + "," + password + "," + name + "," + surname + ",true",
-        //all equal but adminID
-        adminIDStringOther + "," + username + "," + password + "," + name + "," + surname + ",false",
-        //all equal but username
-        adminIDString + "," + usernameOther + "," + password + "," + name + "," + surname + ",true",
-        //all equal but password
-        adminIDString + "," + username + "," + passwordOther + "," + name + "," + surname + ",true",
-        //all equal but name
-        adminIDString + "," + username + "," + password + "," + nameOther + "," + surname + ",true",
-        //all equal but surname
-        adminIDString + "," + username + "," + password + "," + name + "," + surnameOther + ",true"
-    })
-    void test_equals(int adminID2, String username2, String password2, String name2, String surname2,
-            boolean result) {
+    @MethodSource("equalsProvider")
+    void test_equals(Admin aOther, boolean result) {
+        assertEquals(result, admin.equals(aOther));
+    }
 
-        Admin adminOther = new Admin(adminID2, username2, password2, name2, surname2);
-
-        assertEquals(result,
-                admin.equals(adminOther));
+    static Stream<Arguments> equalsProvider() throws Exception {
+        initializeParticipant();
+        return Stream.of(
+                arguments(Utility.clone(admin), true),
+                arguments(cloneParticipantAndModify("adminID"), false),
+                arguments(cloneParticipantAndModify("username"), true),
+                arguments(cloneParticipantAndModify("password"), true),
+                arguments(cloneParticipantAndModify("name"), true),
+                arguments(cloneParticipantAndModify("surname"), true)
+        );
     }
 
     @Test
     void test_toString() {
         String adminString = admin.toString();
-        assertTrue(adminString.contains(adminIDString));
-        assertTrue(adminString.contains(username));
-        assertTrue(adminString.contains(password));
-        assertTrue(adminString.contains(name));
-        assertTrue(adminString.contains(surname));
+        assertTrue(adminString.contains(admin.getAdminID() + ""));
+        assertTrue(adminString.contains(admin.getUsername()));
+        assertTrue(adminString.contains(admin.getPassword()));
+        assertTrue(adminString.contains(admin.getName()));
+        assertTrue(adminString.contains(admin.getSurname()));
     }
 
     @Test
     void test_getFullName() {
-        String fullName = String.format("%s %s", name, surname);
+        String fullName = String.format("%s %s", admin.getName(), admin.getSurname());
         assertEquals(admin.getFullName(), fullName);
+    }
+
+    public static Admin cloneParticipantAndModify(String attribute) throws IOException, ClassNotFoundException {
+        Admin modifiedAdmin = Utility.clone(admin);
+
+        switch (attribute) {
+            case "adminID" ->
+                modifiedAdmin.setAdminID(adminIDOther);
+            case "username" ->
+                modifiedAdmin.setUsername(usernameOther);
+            case "password" ->
+                modifiedAdmin.setPassword(passwordOther);
+            case "name" ->
+                modifiedAdmin.setName(nameOther);
+            case "surname" ->
+                modifiedAdmin.setSurname(surnameOther);
+            default ->
+                throw new AssertionError();
+        }
+        return modifiedAdmin;
     }
 }
