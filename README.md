@@ -10,7 +10,7 @@ The project follows a simplified Larman's methodology¹ of software development,
 * Testing.
 
 Below are all use cases of the software, shown using a UML use case diagram:
-<img src="https://gcdnb.pbrd.co/images/lfHcJlGafbrg.jpg?o=1" width=400 height=300>
+<img src="https://iili.io/2tRdPJS.jpg" width=400 height=300>
 
 The software systems contains tests written in JUnit for all system operations and domain classes. Every system operation and domain class is documented.
 
@@ -21,7 +21,7 @@ It consists of three separate subprojects:
 * Common - subproject containing files required for both client and server sides.
 
 Below is a diagram of the entire software system, focusing on the structure of the application logic.
-<img src="https://gcdnb.pbrd.co/images/rkzFUNheNge9.jpg?o=1" width=1300 height=1300>
+<img src="https://iili.io/2tR323l.jpg" width=1300 height=1300>
 
 ## Literature
 ¹ Влајић, Синиша. *Пројектовање софтвера (скрипта - радни материјал), вер. 1.3*. Факултет организационих наука. Београд 2020. Available at: [ResearchGate](https://www.researchgate.net/publication/344459754_PROJEKTOVANE_SOFTVERA_SKRIPTA_-_RADNI_MATERIJAL_-_2020).
